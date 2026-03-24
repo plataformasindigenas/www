@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Política de Privacidade | Plataforma de Línguas Indígenas</title>
+    <meta name="description"
+        content="Política de privacidade da Plataforma de Línguas Indígenas. Saiba como tratamos seus dados pessoais em conformidade com a LGPD.">
+    <link rel="alternate" hreflang="en" href="https://terradoc.org/en/privacy.html">
+    <link rel="alternate" hreflang="es" href="https://terradoc.org/es/privacidad.html">
+    <link rel="alternate" hreflang="pt" href="https://terradoc.org/privacidade.html">
+    <link rel="icon" type="image/svg+xml" href="/logo.svg">
+    <link href="/src/styles.css" rel="stylesheet">
+</head>
+
+<body class="bg-terra-50">
+    <!-- Navigation -->
+    <header class="fixed top-0 left-0 right-0 z-50 glass">
+        <nav class="container-wide flex items-center justify-between px-4 md:px-6 py-3">
+            <a href="/" class="flex items-center gap-3">
+                <img src="/logo.svg" alt="Logo" class="w-10 h-10">
+                <span class="font-serif text-lg font-semibold text-terra-700 hidden sm:block">Plataforma de Línguas
+                    Indígenas</span>
+            </a>
+            <div class="hidden md:flex items-center gap-6">
+                <a href="/" class="nav-link">Início</a>
+                <a href="/plataformas.html" class="nav-link">Plataformas</a>
+                <a href="/equipe.html" class="nav-link">Equipe</a>
+                <a href="/contato.html" class="nav-link">Contato</a>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="lang-switcher">
+                    <button class="lang-btn-active">PT</button>
+                    <button onclick="switchLanguage('en')" class="lang-btn-inactive">EN</button>
+                    <button onclick="switchLanguage('es')" class="lang-btn-inactive">ES</button>
+                </div>
+                <button id="menu-toggle" class="md:hidden p-2">
+                    <svg class="w-6 h-6 text-ink-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="mobile-menu">
+        <div class="flex justify-between items-center p-4 border-b border-terra-200">
+            <span class="font-serif text-lg font-semibold text-terra-700">Menu</span>
+            <button id="menu-close" class="p-2">
+                <svg class="w-6 h-6 text-ink-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <nav class="p-6 space-y-4">
+            <a href="/" class="mobile-nav-link block text-lg text-ink-700 py-2">Início</a>
+            <a href="/plataformas.html" class="mobile-nav-link block text-lg text-ink-700 py-2">Plataformas</a>
+            <a href="/equipe.html" class="mobile-nav-link block text-lg text-ink-700 py-2">Equipe</a>
+            <a href="/contato.html" class="mobile-nav-link block text-lg text-ink-700 py-2">Contato</a>
+        </nav>
+    </div>
+
+    <!-- Page Header -->
+    <section class="pt-32 pb-16 bg-gradient-to-br from-terra-100 to-terra-50 relative overflow-hidden">
+        <div class="absolute inset-0 opacity-20" style="background-image: url('/patterns/weave.svg');"></div>
+        <div class="container-wide px-4 md:px-6 relative">
+            <div class="text-center">
+                <h1 class="text-display-md md:text-display-lg font-serif font-bold text-ink-900 mb-4">Política de Privacidade</h1>
+                <p class="text-xl text-ink-600 max-w-2xl mx-auto">Como tratamos seus dados pessoais em conformidade com a LGPD.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Privacy Policy Content -->
+    <section class="section bg-white">
+        <div class="container-narrow px-4 md:px-6">
+            <div class="prose max-w-none">
+                <div class="card p-8 mb-8 reveal">
+                    <h2 class="font-serif text-2xl font-semibold text-ink-900 mb-4">Dados Coletados</h2>
+                    <p class="text-ink-600 mb-4">Este site coleta dados pessoais exclusivamente por meio do formulário de contato, processado pelo serviço <strong>formsubmit.co</strong>. Os dados coletados são:</p>
+                    <ul class="list-disc list-inside text-ink-600 space-y-2">
+                        <li>Nome</li>
+                        <li>E-mail</li>
+                        <li>Organização</li>
+                        <li>Mensagem</li>
+                    </ul>
+                </div>
+
+                <div class="card p-8 mb-8 reveal">
+                    <h2 class="font-serif text-2xl font-semibold text-ink-900 mb-4">Finalidade do Uso</h2>
+                    <p class="text-ink-600">Os dados coletados são utilizados exclusivamente para responder a consultas e solicitações de contato. Não compartilhamos, vendemos ou utilizamos seus dados para qualquer outra finalidade.</p>
+                </div>
+
+                <div class="card p-8 mb-8 reveal">
+                    <h2 class="font-serif text-2xl font-semibold text-ink-900 mb-4">Cookies e Rastreamento</h2>
+                    <p class="text-ink-600">Este site é estático e <strong>não utiliza cookies, rastreadores ou ferramentas de análise de terceiros</strong>. Nenhum dado de navegação é coletado ou armazenado.</p>
+                </div>
+
+                <div class="card p-8 mb-8 reveal">
+                    <h2 class="font-serif text-2xl font-semibold text-ink-900 mb-4">Serviços Externos</h2>
+                    <p class="text-ink-600">Este site carrega fontes tipográficas dos servidores do <strong>Google Fonts</strong>. Ao acessar o site, seu navegador pode enviar dados ao Google conforme a <a href="https://policies.google.com/privacy" target="_blank" class="text-terra-600 hover:text-ember-600 underline">política de privacidade do Google</a>.</p>
+                </div>
+
+                <div class="card p-8 mb-8 reveal">
+                    <h2 class="font-serif text-2xl font-semibold text-ink-900 mb-4">Seus Direitos (LGPD)</h2>
+                    <p class="text-ink-600 mb-4">Em conformidade com a Lei Geral de Proteção de Dados (LGPD - Lei n. 13.709/2018), você tem direito a:</p>
+                    <ul class="list-disc list-inside text-ink-600 space-y-2">
+                        <li>Solicitar acesso aos seus dados pessoais</li>
+                        <li>Solicitar a correção de dados incompletos ou desatualizados</li>
+                        <li>Solicitar a exclusão dos seus dados pessoais</li>
+                        <li>Revogar o consentimento para o uso dos seus dados</li>
+                    </ul>
+                </div>
+
+                <div class="card p-8 mb-8 reveal">
+                    <h2 class="font-serif text-2xl font-semibold text-ink-900 mb-4">Exclusão de Dados</h2>
+                    <p class="text-ink-600">Para solicitar a exclusão dos seus dados pessoais, entre em contato pelo e-mail <a href="mailto:info@plataformasindigenas.org" class="text-terra-600 hover:text-ember-600 underline">info@plataformasindigenas.org</a>.</p>
+                </div>
+
+                <div class="card p-8 reveal">
+                    <h2 class="font-serif text-2xl font-semibold text-ink-900 mb-4">Atualização desta Política</h2>
+                    <p class="text-ink-600">Esta política de privacidade pode ser atualizada periodicamente. A data da última atualização é indicada abaixo.</p>
+                    <p class="text-ink-500 text-sm mt-4">Última atualização: março de 2026</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-terra-900 text-terra-200 py-16">
+        <div class="container-wide px-4 md:px-6">
+            <div class="grid md:grid-cols-4 gap-12 mb-12">
+                <div>
+                    <div class="flex items-center gap-3 mb-4">
+                        <img src="/logo.svg" alt="Logo" class="w-10 h-10">
+                        <span class="font-serif text-lg font-semibold text-white">Plataforma de Línguas Indígenas</span>
+                    </div>
+                    <p class="text-sm text-terra-300">Revitalização e documentação de línguas indígenas brasileiras com
+                        governança comunitária.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-white mb-4">Navegação</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="/" class="hover:text-white transition-colors">Início</a></li>
+                        <li><a href="/plataformas.html" class="hover:text-white transition-colors">Plataformas</a></li>
+                        <li><a href="/equipe.html" class="hover:text-white transition-colors">Equipe</a></li>
+                        <li><a href="/contato.html" class="hover:text-white transition-colors">Contato</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-white mb-4">Contato</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li>info@plataformasindigenas.org</li>
+                        <li>Mato Grosso, Brasil ↔ Alemanha</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-white mb-4">Redes Sociais</h4>
+                    <a href="https://instagram.com/plataformasindigenas" target="_blank"
+                        class="inline-flex items-center gap-2 text-sm hover:text-white transition-colors">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                        </svg>
+                        @plataformasindigenas
+                    </a>
+                </div>
+            </div>
+            <div class="border-t border-terra-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-terra-400">© 2026 Plataforma de Línguas Indígenas. Todos os direitos reservados.
+                </p>
+                <a href="/privacidade.html" class="text-sm text-terra-400 hover:text-white transition-colors">Política de Privacidade</a>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="/js/main.js"></script>
+</body>
+
+</html>

@@ -188,18 +188,21 @@ function switchLanguage(lang) {
             platforms: 'plataformas.html',
             team: 'equipe.html',
             contact: 'contato.html',
+            privacy: 'privacidade.html',
         },
         en: {
             index: 'index.html',
             platforms: 'platforms.html',
             team: 'team.html',
             contact: 'contact.html',
+            privacy: 'privacy.html',
         },
         es: {
             index: 'index.html',
             platforms: 'plataformas.html',
             team: 'equipo.html',
             contact: 'contacto.html',
+            privacy: 'privacidad.html',
         },
     };
 
@@ -211,6 +214,8 @@ function switchLanguage(lang) {
         pageType = 'team';
     } else if (currentPath.includes('contact') || currentPath.includes('contato')) {
         pageType = 'contact';
+    } else if (currentPath.includes('privac')) {
+        pageType = 'privacy';
     }
 
     // Build new path

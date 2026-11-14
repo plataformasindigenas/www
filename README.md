@@ -1,83 +1,16 @@
-# Plataforma de Línguas Indígenas
+# www: two small sites
 
-Portal oficial da **Plataforma de Línguas Indígenas** — um projeto de revitalização, fortalecimento e documentação de línguas indígenas brasileiras através de plataformas digitais, dicionários, corpus linguísticos, dados etnobotânicos e materiais pedagógicos, com governança comunitária e ética.
+| Folder | Site | Built with |
+|---|---|---|
+| [`portal/`](portal/) | <https://plataformas.terradoc.org/>, the Plataformas Indígenas portal (pt/en/es) | Vite + Tailwind (`cd portal && npm ci && npm run build`) |
+| [`landing/`](landing/) | <https://terradoc.org/>, the terradoc software page | nothing: plain HTML, served as is |
 
-## Visite
+Every push is built by `.github/workflows/publish.yml` and published as the git refs
+`refs/portal/<branch>` and `refs/landing/<branch>`; the web server picks them up within about two
+minutes (terradoc's `sitepull`, see `plataformasindigenas/terradoc/server/README.md`). `master` is
+production. Any other branch is a preview at `https://previews.terradoc.org/plataformas/<branch>/`
+and `https://previews.terradoc.org/terradoc/<branch>/`; the portal's links are root-relative, so a
+portal preview shows each page but its menu leads to the live site's paths.
 
-- **Portal**: [terradoc.org](https://terradoc.org)
-- **Instagram**: [@plataformasindigenas](https://instagram.com/plataformasindigenas)
-
-### Plataformas
-
-- **Bororo (Boe Eno Moto)**: [boeenomoto.terradoc.org](https://boeenomoto.terradoc.org)
-- **Enawenê-Nawê**: [enawenenawe.terradoc.org](https://enawenenawe.terradoc.org)
-- **Xavante**: [xavante.terradoc.org](https://xavante.terradoc.org)
-- **Akuntsu**: [akuntsu.terradoc.org](https://akuntsu.terradoc.org)
-- **Paresi**: [paresi.terradoc.org](https://paresi.terradoc.org)
-- **Bakairi**: [bakairi.terradoc.org](https://bakairi.terradoc.org)
-
-## Objetivos
-
-- Documentar e preservar línguas indígenas em risco de extinção
-- Criar materiais didáticos para escolas indígenas
-- Desenvolver plataformas digitais acessíveis (dicionários, corpus, materiais)
-- Capacitar professores indígenas
-- Garantir governança comunitária e respeito aos direitos de dados
-
-## Tecnologias
-
-- **Vite** — Build tool
-- **Tailwind CSS** — Framework CSS utilitário
-- **JavaScript (ES6+)** — Interatividade sem frameworks
-- **Google Fonts** — Inter + Playfair Display
-
-As plataformas individuais são geradas com [terradoc](https://pypi.org/project/terradoc/), [aptoro](https://pypi.org/project/aptoro/) e [kodudo](https://pypi.org/project/kodudo/).
-
-## Executando Localmente
-
-```bash
-npm install
-npm run dev       # servidor de desenvolvimento
-npm run build     # build para produção (saída em dist/)
-```
-
-## Estrutura do Projeto
-
-```
-├── index.html            # Página inicial (PT)
-├── plataformas.html      # Detalhes das plataformas
-├── equipe.html           # Equipe
-├── contato.html          # Contato
-├── en/                   # Páginas em inglês
-├── es/                   # Páginas em espanhol
-├── src/
-│   └── styles.css        # Estilos Tailwind
-├── public/
-│   ├── js/main.js        # JavaScript principal
-│   ├── logo.svg          # Logo do projeto
-│   ├── patterns/         # Padrões SVG decorativos
-│   └── images/           # Fotos e logos
-├── vite.config.js        # Configuração do Vite
-├── tailwind.config.js    # Configuração do Tailwind
-└── package.json          # Dependências
-```
-
-## Equipe
-
-- **Fabrício Ferraz Gerardi** — Linguística Computacional
-- **Gustavo Polleti** — Engenharia e Coordenação
-- **Michel Correa da Silva** — Diretor Escolar Indígena
-- **Maria Eduarda Correr** — Pedagogia
-- **José Ícaro Bezerra Clemente** — Engenharia de IA e ML
-- **Fernando Orphão de Carvalho** — Linguística/Antropologia
-- **Carolina Aragon** — Linguística Antropológica
-- **Tiago Tresoldi** — Linguística Histórica Computacional / Análise de Dados
-
-## Contato
-
-- **Email**: info@plataformasindigenas.org
-- **Localização**: Mato Grosso, Brasil ↔ Alemanha
-
-## Licença
-
-Este projeto está licenciado sob a [GNU General Public License v3.0](LICENSE).
+If a build fails, the live sites keep their last good version and an issue
+"Publicação falhou: <branch>" is opened.

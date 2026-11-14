@@ -1,0 +1,171 @@
+# Build and publish the two sites in this repository.
+#
+#   portal/  (Vite)    → refs/portal/<name>   → https://plataformas.terradoc.org/
+#   landing/ (static)  → refs/landing/<name>  → https://terradoc.org/
+#
+# <name> is the branch: master is production; any other branch is a preview at
+# https://previews.terradoc.org/plataformas/<name>/ and .../terradoc/<name>/
+# (the portal's links are root-relative, so its previews show the pages but not
+# the navigation between them). The server (terradoc's sitepull) polls these
+# refs. The same rules as terradoc's reusable workflow: never runs on
+# pull_request, branch names reach the shell only through the environment,
+# actions pinned by SHA, npm install scripts disabled.
+
+name: publish
+
+on:
+  push:
+    branches: ["**"]
+  delete:
+
+permissions: {}
+
+jobs:
+  publish:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      issues: write
+    concurrency:
+      group: publish-${{ github.ref_name }}
+      cancel-in-progress: ${{ github.ref_name != github.event.repository.default_branch }}
+    env:
+      BRANCH: ${{ github.ref_name }}
+      DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+      REPO: ${{ github.repository }}
+      GH_TOKEN: ${{ github.token }}
+      RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      ACTOR: ${{ github.actor }}
+    steps:
+      - name: Work out the name for this branch
+        id: name
+        run: |
+          set -euo pipefail
+          sanitize() {  # same rule as terradoc and sitepull
+            printf '%s' "$1" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9-]+/-/g; s/^-+//' \
+              | cut -c1-40 | sed -E 's/-+$//'
+          }
+          if [ "$BRANCH" = "$DEFAULT_BRANCH" ]; then
+            name="$DEFAULT_BRANCH"
+          else
+            name="$(sanitize "$BRANCH")"
+            if [ -z "$name" ] || [ "$name" = "$DEFAULT_BRANCH" ]; then
+              echo "::error::branch name '$BRANCH' cannot be used for a preview; rename the branch"
+              exit 1
+            fi
+          fi
+          echo "name=$name" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Note the refs this run replaces (compare-and-swap)
+        id: lease
+        env:
+          NAME: ${{ steps.name.outputs.name }}
+        run: |
+          set -euo pipefail
+          origin="https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git"
+          echo "portal=$(git ls-remote "$origin" "refs/portal/$NAME" | cut -f1)" >> "$GITHUB_OUTPUT"
+          echo "landing=$(git ls-remote "$origin" "refs/landing/$NAME" | cut -f1)" >> "$GITHUB_OUTPUT"
+
+      - name: Build the portal
+        working-directory: portal
+        run: |
+          set -euo pipefail
+          npm ci --ignore-scripts --no-audit --no-fund
+          npm run build
+          mv dist "$RUNNER_TEMP/portal"
+
+      - name: Copy the landing page
+        run: cp -r landing "$RUNNER_TEMP/landing"
+
+      - name: Publish
+        id: publish
+        env:
+          NAME: ${{ steps.name.outputs.name }}
+          LEASE_PORTAL: ${{ steps.lease.outputs.portal }}
+          LEASE_LANDING: ${{ steps.lease.outputs.landing }}
+        run: |
+          set -euo pipefail
+          origin="https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git"
+          tip="$(git ls-remote "$origin" "refs/heads/$BRANCH" | cut -f1)"
+          if [ "$tip" != "$GITHUB_SHA" ]; then
+            echo "::notice::$BRANCH moved on (now ${tip:-deleted}); not publishing ${GITHUB_SHA:0:7}"
+            exit 0
+          fi
+          publish() {  # publish <site> <dir> <lease>
+            local site="$1" dir="$2" lease="$3"
+            ( cd "$dir"
+              SITE="$site" FILES="$(find . -type f | wc -l)" python3 -c 'import json, os
+          print(json.dumps({"project": os.environ["SITE"], "source_commit": os.environ["GITHUB_SHA"],
+                            "source_ref": os.environ["BRANCH"], "files": int(os.environ["FILES"])}, indent=2))' > .release.json
+              git init -q -b site
+              git add -A
+              git -c user.name="publish" -c user.email="publish@users.noreply.github.com" \
+                commit -q -m "$site: $BRANCH@${GITHUB_SHA:0:12}"
+              git push --force-with-lease="refs/$site/$NAME:$lease" "$origin" "HEAD:refs/$site/$NAME" )
+          }
+          publish portal "$RUNNER_TEMP/portal" "$LEASE_PORTAL"
+          publish landing "$RUNNER_TEMP/landing" "$LEASE_LANDING"
+          echo "### ✅ Published \`$BRANCH\` (the server updates within ~2 min)" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Close the failure issue
+        if: success()
+        run: |
+          set -euo pipefail
+          title="Publicação falhou: $BRANCH"
+          gh issue list -R "$REPO" --label publicacao-falhou --state open --json number,title \
+            --jq ".[] | select(.title == \"$title\") | .number" | while read -r n; do
+              gh issue close "$n" -R "$REPO" --comment "✅ Resolvido / Fixed in ${GITHUB_SHA:0:7}: $RUN_URL"
+            done
+
+      - name: Report the failure in an issue
+        if: failure()
+        run: |
+          set -euo pipefail
+          body="$RUNNER_TEMP/report.md"
+          printf '%s\n' "### ❌ Publicação bloqueada / Publication blocked" "" \
+            "A construção falhou; veja os detalhes no link abaixo. O site no ar não mudou." \
+            "The build failed; see the details at the link below. The live site did not change." \
+            "" "Detalhes / Details: $RUN_URL" > "$body"
+          case "$ACTOR" in *"[bot]") ;; *) printf '\ncc @%s\n' "$ACTOR" >> "$body" ;; esac
+          gh label create publicacao-falhou -R "$REPO" --color B60205 \
+            --description "Publicação automática bloqueada / automatic publication blocked" 2>/dev/null || true
+          title="Publicação falhou: $BRANCH"
+          n="$(gh issue list -R "$REPO" --label publicacao-falhou --state open --json number,title \
+                --jq ".[] | select(.title == \"$title\") | .number" | head -1)"
+          if [ -n "$n" ]; then
+            gh issue comment "$n" -R "$REPO" --body-file "$body"
+          else
+            gh issue create -R "$REPO" --title "$title" --label publicacao-falhou --body-file "$body"
+          fi
+
+  cleanup:
+    if: github.event_name == 'delete' && github.event.ref_type == 'branch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    env:
+      DELETED: ${{ github.event.ref }}
+      DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+      REPO: ${{ github.repository }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Delete the previews of the deleted branch
+        run: |
+          set -euo pipefail
+          name="$(printf '%s' "$DELETED" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9-]+/-/g; s/^-+//' \
+                  | cut -c1-40 | sed -E 's/-+$//')"
+          if [ "$DELETED" = "$DEFAULT_BRANCH" ] || [ -z "$name" ] || [ "$name" = "$DEFAULT_BRANCH" ]; then
+            echo "::warning::not deleting previews for '$DELETED'"; exit 0
+          fi
+          for site in portal landing; do
+            gh api -X DELETE "repos/${REPO}/git/refs/${site}/${name}" 2>/dev/null \
+              && echo "Deleted refs/$site/$name" || echo "No refs/$site/$name"
+          done

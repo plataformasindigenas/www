@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terradoc — Publishing engine for Indigenous language documentation</title>
+<meta name="description" content="Terradoc is a Python toolkit for building multilingual documentation websites for Indigenous languages, ecological knowledge, and community-led cultural archives.">
+<link rel="icon" type="image/svg+xml" href="/logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#faf9f7;--bg-card:#ffffff;--bg-code:#f5f3ef;
+  --fg:#2c2520;--fg-mid:#5c534b;--fg-dim:#8a8078;
+  --accent:#a85d33;--accent-hover:#8f4e2b;
+  --border:#e5e0da;--border-light:#efe9e2;
+  --red:#c75b39;--green:#5a8a4a;--blue:#4a7a8a;
+}
+body{
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  color:var(--fg);background:var(--bg);
+  line-height:1.65;-webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent);text-decoration:none}
+a:hover{color:var(--accent-hover);text-decoration:underline}
+code{
+  font-family:'Source Code Pro',ui-monospace,monospace;
+  font-size:0.9em;background:var(--bg-code);
+  padding:0.15em 0.4em;border-radius:4px;
+}
+pre{
+  background:var(--bg-code);border:1px solid var(--border-light);
+  border-radius:8px;padding:1.25rem 1.5rem;overflow-x:auto;
+  font-family:'Source Code Pro',ui-monospace,monospace;
+  font-size:0.875rem;line-height:1.6;
+}
+pre code{background:none;padding:0}
+
+.container{max-width:800px;margin:0 auto;padding:0 1.5rem}
+
+/* Header */
+header{
+  border-bottom:1px solid var(--border);
+  padding:1rem 0;
+}
+header .container{display:flex;align-items:center;justify-content:space-between}
+.logo-group{display:flex;align-items:center;gap:0.75rem}
+.logo-group img{width:36px;height:36px}
+.logo-group span{font-size:1.125rem;font-weight:600;color:var(--fg);letter-spacing:-0.01em}
+header nav{display:flex;gap:1.5rem;font-size:0.9rem}
+header nav a{color:var(--fg-mid);font-weight:500}
+header nav a:hover{color:var(--fg);text-decoration:none}
+
+/* Hero */
+.hero{padding:5rem 0 4rem;text-align:center}
+.hero h1{
+  font-size:2.5rem;font-weight:600;letter-spacing:-0.025em;
+  line-height:1.2;margin-bottom:1rem;
+}
+.hero .subtitle{
+  font-size:1.15rem;color:var(--fg-mid);
+  max-width:600px;margin:0 auto 2rem;
+}
+.hero .actions{display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap}
+.btn{
+  display:inline-flex;align-items:center;gap:0.5rem;
+  padding:0.65rem 1.5rem;border-radius:6px;
+  font-size:0.9rem;font-weight:500;transition:all 0.15s;
+  border:1px solid transparent;cursor:pointer;text-decoration:none;
+}
+.btn:hover{text-decoration:none}
+.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn-primary:hover{background:var(--accent-hover);color:#fff}
+.btn-secondary{background:var(--bg-card);color:var(--fg);border-color:var(--border)}
+.btn-secondary:hover{background:var(--bg-code);color:var(--fg)}
+
+/* Install */
+.install{
+  background:var(--bg-code);border:1px solid var(--border-light);
+  border-radius:8px;padding:0.85rem 1.25rem;
+  display:inline-flex;align-items:center;gap:0.75rem;
+  font-family:'Source Code Pro',monospace;font-size:0.95rem;
+  margin-bottom:3rem;
+}
+.install .dollar{color:var(--fg-dim);user-select:none}
+
+/* Sections */
+section{padding:3rem 0}
+section+section{border-top:1px solid var(--border-light)}
+h2{font-size:1.35rem;font-weight:600;letter-spacing:-0.015em;margin-bottom:1.25rem}
+
+/* Feature grid */
+.features{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:1.25rem;margin-top:1.25rem;
+}
+.feature{
+  background:var(--bg-card);border:1px solid var(--border-light);
+  border-radius:8px;padding:1.25rem;
+}
+.feature h3{font-size:0.95rem;font-weight:600;margin-bottom:0.4rem}
+.feature p{font-size:0.875rem;color:var(--fg-mid);line-height:1.55}
+
+/* Modules */
+.modules{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:0.75rem;margin-top:1rem;
+}
+.module-tag{
+  background:var(--bg-card);border:1px solid var(--border-light);
+  border-radius:6px;padding:0.6rem 0.85rem;
+  font-size:0.85rem;font-weight:500;text-align:center;
+}
+
+/* Platforms */
+.platforms{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:1rem;margin-top:1.25rem;
+}
+.platform{
+  background:var(--bg-card);border:1px solid var(--border-light);
+  border-radius:8px;padding:1.25rem;display:block;
+  transition:border-color 0.15s;
+}
+.platform:hover{border-color:var(--accent);text-decoration:none}
+.platform h3{font-size:0.95rem;font-weight:600;color:var(--fg);margin-bottom:0.25rem}
+.platform p{font-size:0.8rem;color:var(--fg-mid)}
+.platform .arrow{color:var(--accent);font-size:0.85rem;margin-top:0.5rem;display:block}
+
+/* Quick start */
+.quickstart pre{margin-top:0.75rem}
+.quickstart pre+pre{margin-top:0.5rem}
+
+/* Footer */
+footer{
+  border-top:1px solid var(--border);
+  padding:2rem 0;margin-top:1rem;
+  font-size:0.8rem;color:var(--fg-dim);
+}
+footer .container{display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+footer a{color:var(--fg-mid)}
+
+/* Responsive */
+@media(max-width:600px){
+  .hero h1{font-size:1.75rem}
+  .hero .subtitle{font-size:1rem}
+  header nav{gap:1rem;font-size:0.8rem}
+  .features{grid-template-columns:1fr}
+  .platforms{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a href="/" class="logo-group" style="text-decoration:none">
+      <img src="/logo.svg" alt="Terradoc">
+      <span>Terradoc</span>
+    </a>
+    <nav>
+      <a href="#features">Features</a>
+      <a href="#platforms">Platforms</a>
+      <a href="#quickstart">Quick Start</a>
+      <a href="https://github.com/plataformasindigenas/terradoc">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="container">
+      <h1>Publishing engine for Indigenous language documentation</h1>
+      <p class="subtitle">
+        A Python toolkit for building multilingual documentation websites
+        for Indigenous languages, ecological knowledge, and community-led cultural archives.
+      </p>
+      <div class="install">
+        <span class="dollar">$</span> pip install terradoc
+      </div>
+      <br>
+      <div class="actions">
+        <a href="#quickstart" class="btn btn-primary">Get Started</a>
+        <a href="https://github.com/plataformasindigenas/terradoc" class="btn btn-secondary">
+          View on GitHub
+        </a>
+        <a href="https://pypi.org/project/terradoc/" class="btn btn-secondary">
+          PyPI
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="features">
+    <div class="container">
+      <h2>What Terradoc Does</h2>
+      <p>Terradoc converts structured project data into a complete static website. It validates
+         data integrity, converts source formats, and generates HTML pages and JSON assets
+         that can be published on any standard static hosting.</p>
+      <div class="features">
+        <div class="feature">
+          <h3>Structured Data</h3>
+          <p>Lexical records, encyclopedia articles, fauna, ethnobotany, bibliography, recordings, and videos as validated source files.</p>
+        </div>
+        <div class="feature">
+          <h3>Multilingual</h3>
+          <p>Locale-based navigation and page generation. Interface text in any language; content rendered across locales.</p>
+        </div>
+        <div class="feature">
+          <h3>Static Output</h3>
+          <p>No database, no application server. Deploy to GitHub Pages, a VPS, or any web host.</p>
+        </div>
+        <div class="feature">
+          <h3>Community-Governed</h3>
+          <p>File-based content workflows that can be reviewed, archived, and controlled by the communities they serve.</p>
+        </div>
+        <div class="feature">
+          <h3>Customizable</h3>
+          <p>Theme presets, per-module decoration intensity, template overrides, and full YAML configuration.</p>
+        </div>
+        <div class="feature">
+          <h3>Data Validation</h3>
+          <p>ID format enforcement, cross-reference integrity, bibliography key resolution, and category vocabulary checks.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <h2>Content Modules</h2>
+      <p>Each module handles a specific type of documentation material. Enable only what your project needs.</p>
+      <div class="modules">
+        <div class="module-tag">Dictionary</div>
+        <div class="module-tag">Encyclopedia</div>
+        <div class="module-tag">Fauna</div>
+        <div class="module-tag">Ethnobotany</div>
+        <div class="module-tag">Bibliography</div>
+        <div class="module-tag">Recordings</div>
+        <div class="module-tag">Videos</div>
+        <div class="module-tag">Corpus</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="platforms">
+    <div class="container">
+      <h2>Live Platforms</h2>
+      <p>Terradoc powers these community language documentation portals, built in collaboration with the
+         <a href="https://portal.plataformasindigenas.org">Plataforma de L&iacute;nguas Ind&iacute;genas</a>.</p>
+      <div class="platforms">
+        <a href="https://boeenomoto.terradoc.org" class="platform">
+          <h3>Boe Eno Moto</h3>
+          <p>Bororo language &mdash; dictionary, encyclopedia, fauna, ethnobotany, bibliography</p>
+          <span class="arrow">&rarr; boeenomoto.terradoc.org</span>
+        </a>
+        <a href="https://enawenenawe.terradoc.org" class="platform">
+          <h3>Enawen&ecirc;-Naw&ecirc;</h3>
+          <p>Enawen&ecirc;-Naw&ecirc; language &mdash; dictionary, fauna, bibliography</p>
+          <span class="arrow">&rarr; enawenenawe.terradoc.org</span>
+        </a>
+        <a href="https://makurap.terradoc.org" class="platform">
+          <h3>Makurap</h3>
+          <p>Makurap language &mdash; dictionary, fauna, ethnobotany, bibliography</p>
+          <span class="arrow">&rarr; makurap.terradoc.org</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="quickstart" class="quickstart">
+    <div class="container">
+      <h2>Quick Start</h2>
+      <p>Install from PyPI and scaffold a new project:</p>
+      <pre><code><span style="color:var(--fg-dim)">$</span> pip install terradoc
+<span style="color:var(--fg-dim)">$</span> terradoc init my-project
+<span style="color:var(--fg-dim)">$</span> cd my-project</code></pre>
+      <p style="margin-top:1rem">Add your data files, configure <code>terradoc.yaml</code>, and build:</p>
+      <pre><code><span style="color:var(--fg-dim)">$</span> terradoc build</code></pre>
+      <p style="margin-top:1rem">The generated site is written to <code>docs/</code>, ready to publish.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <h2>Project Structure</h2>
+      <pre><code>my-project/
+  terradoc.yaml          # project configuration
+  config/
+    templates/           # optional template overrides
+    dictionary.yaml      # per-module display config
+    fauna.yaml
+    ...
+  data/
+    dictionary.tsv       # lexical records
+    encyclopedia/        # Markdown articles with YAML front matter
+    fauna.yaml           # fauna entries
+    ethnobotany.yaml     # ethnobotanical knowledge
+    references.bib       # BibTeX bibliography
+    ...
+  locales/               # interface translations
+  docs/                  # generated output</code></pre>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <span>&copy; 2024&ndash;2026 Terradoc contributors. GPL-3.0 license.</span>
+    <span>
+      <a href="https://github.com/plataformasindigenas/terradoc">GitHub</a>
+      &middot;
+      <a href="https://pypi.org/project/terradoc/">PyPI</a>
+    </span>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'})}
+  });
+});
+</script>
+</body>
+</html>

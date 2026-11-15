@@ -84,6 +84,27 @@ jobs:
       - name: Copy the landing page
         run: cp -r landing "$RUNNER_TEMP/landing"
 
+      - name: Check the links to the platforms (warnings only; a dead link does not block)
+        run: |
+          set -uo pipefail
+          grep -rhoE 'https://[a-z0-9-]+\.terradoc\.org[^"'"'"' <)]*' "$RUNNER_TEMP/portal" "$RUNNER_TEMP/landing" \
+            | grep -vE '^https://(plataformas|www|previews)\.' | sort -u > "$RUNNER_TEMP/links.txt"
+          bad=0
+          while read -r u; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 "$u")
+            if [ "$code" != 200 ]; then
+              echo "::warning::link $u returns $code"
+              echo "- \`$u\`: $code" >> "$RUNNER_TEMP/links.md"
+              bad=$((bad + 1))
+            fi
+          done < "$RUNNER_TEMP/links.txt"
+          total=$(wc -l < "$RUNNER_TEMP/links.txt")
+          if [ "$bad" -gt 0 ]; then
+            { echo "### ⚠️ $bad of $total links to the platforms are broken"; cat "$RUNNER_TEMP/links.md"; } >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "All $total links to the platforms answer 200."
+          fi
+
       - name: Publish
         id: publish
         env:

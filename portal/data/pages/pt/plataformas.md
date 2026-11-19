@@ -22,7 +22,8 @@ Plataforma dedicada à preservação e documentação dos saberes linguísticos 
 
 - **Xavante.** Dicionário e informações sobre a fauna na língua Xavante (dicionário, fauna).
 - **Akuntsu.** Léxico e textos paralelos da língua Akuntsu (léxico, textos paralelos).
-- **Paresi.** Dicionário digital da língua Paresi (dicionário).
+- **Haliti-Paresi.** Plataforma em preparação: textos sobre o povo, a língua e o artesanato; o dicionário vem com a pesquisa de campo.
+- **Terena.** Plataforma em preparação: textos sobre o povo, a língua e a cerâmica; o dicionário vem com a pesquisa de campo.
 - **Bakairi.** Dicionário digital da língua Bakairi (dicionário).
 - **Kayabi.** Plataforma em fase de planejamento, com coleta de dados em andamento (dicionário, gravações).
 - **Mỹky-Manoki.** Plataforma em fase de planejamento (léxico, textos paralelos).

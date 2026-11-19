@@ -22,7 +22,8 @@ A platform dedicated to the preservation and documentation of the linguistic and
 
 - **Xavante.** Dictionary and fauna information in the Xavante language (dictionary, fauna).
 - **Akuntsu.** Lexicon and parallel texts of the Akuntsu language (lexicon, parallel texts).
-- **Paresi.** Digital dictionary of the Paresi language (dictionary).
+- **Haliti-Paresi.** Platform in preparation: texts on the people, the language and their crafts; the dictionary will follow the fieldwork.
+- **Terena.** Platform in preparation: texts on the people, the language and their pottery; the dictionary will follow the fieldwork.
 - **Bakairi.** Digital dictionary of the Bakairi language (dictionary).
 - **Kayabi.** Platform in planning phase, with data collection underway (dictionary, recordings).
 - **Mỹky-Manoki.** Platform in planning phase (lexicon, parallel texts).

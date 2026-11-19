@@ -1,0 +1,34 @@
+# The Plataformas Indígenas portal, built by terradoc since 2026-11 (meta P7-PLAN.md): pages
+# only (data/pages/<locale>/), no data modules, no grafismo (D21: the project's neutral
+# palette, no pack).
+project_name: "Plataforma de Línguas Indígenas"
+site_title: "Plataforma de Línguas Indígenas"
+meta_prefix: "plataformas"
+
+locales: ["pt", "en", "es"]
+locale_labels:
+  pt: "Português"
+  en: "English"
+  es: "Español"
+default_locale: "pt"
+base_url: "https://plataformas.terradoc.org"
+project_url: "https://plataformas.terradoc.org/"
+
+modules:
+  dictionary: { enabled: false }
+  encyclopedia: { enabled: false }
+  fauna: { enabled: false }
+  ethnobotany: { enabled: false }
+  bibliography: { enabled: false }
+  recordings: { enabled: false }
+  corpus: { enabled: false }
+  videos: { enabled: false }
+
+theme:
+  pack: none
+  # The first photograph of the old slideshow (Tiago, 2026-11-19: keep the photos).
+  # Credit to be filled by the team.
+  hero_image: "images/EN-escola.jpeg"
+  hero_alt: "Escola indígena"
+  hero_people: true
+  favicon: "images/logo.svg"

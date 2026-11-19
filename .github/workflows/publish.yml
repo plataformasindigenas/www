@@ -1,15 +1,14 @@
 # Build and publish the two sites in this repository.
 #
-#   portal/  (Vite)    → refs/portal/<name>   → https://plataformas.terradoc.org/
+#   portal/  (terradoc) → refs/portal/<name>   → https://plataformas.terradoc.org/
 #   landing/ (static)  → refs/landing/<name>  → https://terradoc.org/
 #
 # <name> is the branch: master is production; any other branch is a preview at
 # https://previews.terradoc.org/plataformas/<name>/ and .../terradoc/<name>/
-# (the portal's links are root-relative, so its previews show the pages but not
-# the navigation between them). The server (terradoc's sitepull) polls these
+# (the portal's links are relative, so a preview works as a whole). The server (terradoc's sitepull) polls these
 # refs. The same rules as terradoc's reusable workflow: never runs on
 # pull_request, branch names reach the shell only through the environment,
-# actions pinned by SHA, npm install scripts disabled.
+# actions pinned by SHA, terradoc pinned in portal/requirements.txt.
 
 name: publish
 
@@ -73,13 +72,45 @@ jobs:
           echo "portal=$(git ls-remote "$origin" "refs/portal/$NAME" | cut -f1)" >> "$GITHUB_OUTPUT"
           echo "landing=$(git ls-remote "$origin" "refs/landing/$NAME" | cut -f1)" >> "$GITHUB_OUTPUT"
 
-      - name: Build the portal
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
+        with:
+          python-version: "3.12"
+
+      - name: Build the portal with terradoc (check, build, page weight and links)
         working-directory: portal
         run: |
           set -euo pipefail
-          npm ci --ignore-scripts --no-audit --no-fund
-          npm run build
-          mv dist "$RUNNER_TEMP/portal"
+          python -m venv "$RUNNER_TEMP/venv"
+          "$RUNNER_TEMP/venv/bin/pip" install -q --no-cache-dir -r requirements.txt
+          export PATH="$RUNNER_TEMP/venv/bin:$PATH"
+          terradoc --version
+          terradoc build --config terradoc.yaml --out "$RUNNER_TEMP/portal" \
+            --bundle-dir "$RUNNER_TEMP/portal-bundle" --format github
+          python -m terradoc.sitecheck "$RUNNER_TEMP/portal"
+
+      - name: Guard the portal against lost pages (as the platforms; 'confirma-reducao' in a commit allows it)
+        env:
+          NAME: ${{ steps.name.outputs.name }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+          origin="https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git"
+          args=(--current "$RUNNER_TEMP/portal")
+          for ref in "refs/portal/$NAME" "refs/portal/$DEFAULT_BRANCH"; do
+            if [ -n "$(git ls-remote "$origin" "$ref" | cut -f1)" ]; then
+              git fetch -q --depth 1 "$origin" "$ref"
+              mkdir -p "$RUNNER_TEMP/previous" && git archive FETCH_HEAD | tar -x -C "$RUNNER_TEMP/previous"
+              args+=(--previous "$RUNNER_TEMP/previous"); break
+            fi
+          done
+          if [ -n "${BEFORE:-}" ] && [ "$BEFORE" != 0000000000000000000000000000000000000000 ] \
+             && gh api "repos/${REPO}/compare/${BEFORE}...${GITHUB_SHA}" --jq '.commits[].commit.message' \
+                | grep -qi 'confirma-reducao'; then
+            args+=(--confirm-shrink)
+          elif git log -1 --format=%B | grep -qi 'confirma-reducao'; then
+            args+=(--confirm-shrink)
+          fi
+          "$RUNNER_TEMP/venv/bin/terradoc" guard "${args[@]}" --format github
 
       - name: Copy the landing page
         run: cp -r landing "$RUNNER_TEMP/landing"

@@ -122,7 +122,7 @@ jobs:
             | grep -vE '^https://(plataformas|www|previews)\.' | sort -u > "$RUNNER_TEMP/links.txt"
           bad=0
           while read -r u; do
-            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 "$u")
+            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 "$u" || true)  # the step runs with bash -e
             if [ "$code" != 200 ]; then
               echo "::warning::link $u returns $code"
               echo "- \`$u\`: $code" >> "$RUNNER_TEMP/links.md"

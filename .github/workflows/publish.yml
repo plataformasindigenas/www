@@ -115,6 +115,14 @@ jobs:
       - name: Copy the landing page
         run: cp -r landing "$RUNNER_TEMP/landing"
 
+      - name: Add the editing guide (terradoc docs/guia → terradoc.org/guia/)
+        run: |
+          set -euo pipefail
+          git clone -q --depth 1 https://github.com/plataformasindigenas/terradoc.git "$RUNNER_TEMP/terradoc-src"
+          python3 -m venv "$RUNNER_TEMP/guia-venv"
+          "$RUNNER_TEMP/guia-venv/bin/pip" install -q --no-cache-dir "markdown-it-py==3.0.0"
+          "$RUNNER_TEMP/guia-venv/bin/python" scripts/build_guia.py "$RUNNER_TEMP/terradoc-src" "$RUNNER_TEMP/landing"
+
       - name: Check the links to the platforms (warnings only; a dead link does not block)
         run: |
           set -uo pipefail

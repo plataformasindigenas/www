@@ -63,7 +63,6 @@ Dictionaries, linguistic corpora, and educational materials for each partner com
 
 - **[Bororo (Boe Eno Moto)](https://boeenomoto.terradoc.org/en/index.html)** (live): complete dictionary; corpus (UD + parallel); ethnobotany and fauna; school materials.
 - **[Enawenê-Nawê](https://enawenenawe.terradoc.org/en/index.html)** (live): dictionary; fauna & flora; corpus.
-- **[Makurap](https://makurap.terradoc.org/en/index.html)** (live): dictionary; encyclopedia; fauna and ethnobotany; oral corpus (narratives).
 - **Xavante** (coming soon): dictionary; fauna.
 
 [View all platforms](plataformas.html)

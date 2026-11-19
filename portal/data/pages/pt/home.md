@@ -63,7 +63,6 @@ Dicionários, corpus linguísticos e materiais educacionais para cada comunidade
 
 - **[Bororo (Boe Eno Moto)](https://boeenomoto.terradoc.org/pt/index.html)** (no ar): dicionário completo; corpus (UD + paralelo); etnobotânica e fauna; materiais escolares.
 - **[Enawenê-Nawê](https://enawenenawe.terradoc.org/pt/index.html)** (no ar): dicionário; fauna e flora; corpus.
-- **[Makurap](https://makurap.terradoc.org/pt/index.html)** (no ar): dicionário; enciclopédia; fauna e etnobotânica; corpus oral (narrativas).
 - **Xavante** (em breve): dicionário; fauna.
 
 [Ver todas as plataformas](plataformas.html)

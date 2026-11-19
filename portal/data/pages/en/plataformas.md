@@ -18,12 +18,6 @@ A platform dedicated to the preservation and documentation of the linguistic and
 
 [Dictionary](https://enawenenawe.terradoc.org/en/dictionary/index.html) · [Corpus](https://enawenenawe.terradoc.org/en/corpus.html) · [Ethnobotany](https://enawenenawe.terradoc.org/en/ethnobotany.html) · [Fauna](https://enawenenawe.terradoc.org/en/fauna.html) · [Access the full platform](https://enawenenawe.terradoc.org/en/index.html)
 
-### Makurap
-
-A platform dedicated to the preservation, documentation and appreciation of the linguistic and cultural knowledge of the Makurap people.
-
-[Dictionary](https://makurap.terradoc.org/en/dictionary/index.html) · [Oral corpus](https://makurap.terradoc.org/en/videos.html) · [Ethnobotany](https://makurap.terradoc.org/en/ethnobotany.html) · [Fauna](https://makurap.terradoc.org/en/fauna.html) · [Access the full platform](https://makurap.terradoc.org/en/index.html)
-
 ## Coming soon
 
 - **Xavante.** Dictionary and fauna information in the Xavante language (dictionary, fauna).

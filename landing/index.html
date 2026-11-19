@@ -6,9 +6,6 @@
 <title>Terradoc — Publishing engine for Indigenous language documentation</title>
 <meta name="description" content="Terradoc is a Python toolkit for building multilingual documentation websites for Indigenous languages, ecological knowledge, and community-led cultural archives.">
 <link rel="icon" type="image/svg+xml" href="/logo.svg">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -19,21 +16,21 @@
   --red:#c75b39;--green:#5a8a4a;--blue:#4a7a8a;
 }
 body{
-  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
   color:var(--fg);background:var(--bg);
   line-height:1.65;-webkit-font-smoothing:antialiased;
 }
 a{color:var(--accent);text-decoration:none}
 a:hover{color:var(--accent-hover);text-decoration:underline}
 code{
-  font-family:'Source Code Pro',ui-monospace,monospace;
+  font-family:ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;
   font-size:0.9em;background:var(--bg-code);
   padding:0.15em 0.4em;border-radius:4px;
 }
 pre{
   background:var(--bg-code);border:1px solid var(--border-light);
   border-radius:8px;padding:1.25rem 1.5rem;overflow-x:auto;
-  font-family:'Source Code Pro',ui-monospace,monospace;
+  font-family:ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;
   font-size:0.875rem;line-height:1.6;
 }
 pre code{background:none;padding:0}
@@ -124,7 +121,7 @@ h2{font-size:1.35rem;font-weight:600;letter-spacing:-0.015em;margin-bottom:1.25r
   border-radius:8px;padding:1.25rem;display:block;
   transition:border-color 0.15s;
 }
-.platform:hover{border-color:var(--accent);text-decoration:none}
+a.platform:hover{border-color:var(--accent);text-decoration:none}
 .platform h3{font-size:0.95rem;font-weight:600;color:var(--fg);margin-bottom:0.25rem}
 .platform p{font-size:0.8rem;color:var(--fg-mid)}
 .platform .arrow{color:var(--accent);font-size:0.85rem;margin-top:0.5rem;display:block}
@@ -210,15 +207,15 @@ footer a{color:var(--fg-mid)}
         </div>
         <div class="feature">
           <h3>Static Output</h3>
-          <p>No database, no application server. Deploy to GitHub Pages, a VPS, or any web host.</p>
+          <p>No database, no application server. Pages work without JavaScript, stay light on slow connections and keep working offline once opened.</p>
         </div>
         <div class="feature">
           <h3>Community-Governed</h3>
           <p>File-based content workflows that can be reviewed, archived, and controlled by the communities they serve.</p>
         </div>
         <div class="feature">
-          <h3>Customizable</h3>
-          <p>Theme presets, per-module decoration intensity, template overrides, and full YAML configuration.</p>
+          <h3>Each people&rsquo;s own look</h3>
+          <p>One shared interface; each site brings a palette of five colours named after materials, and optionally its own band, texture and emblem, with their sources recorded.</p>
         </div>
         <div class="feature">
           <h3>Data Validation</h3>
@@ -241,26 +238,35 @@ footer a{color:var(--fg-mid)}
         <div class="module-tag">Recordings</div>
         <div class="module-tag">Videos</div>
         <div class="module-tag">Corpus</div>
+        <div class="module-tag">Pages</div>
       </div>
     </div>
   </section>
 
   <section id="platforms">
     <div class="container">
-      <h2>Live Platforms</h2>
-      <p>Terradoc powers these community language documentation portals, built in collaboration with the
-         <a href="https://portal.plataformasindigenas.org">Plataforma de L&iacute;nguas Ind&iacute;genas</a>.</p>
+      <h2>Platforms</h2>
+      <p>Terradoc builds the language platforms of the
+         <a href="https://plataformas.terradoc.org/">Plataforma de L&iacute;nguas Ind&iacute;genas</a>, and its portal.</p>
       <div class="platforms">
         <a href="https://boeenomoto.terradoc.org" class="platform">
           <h3>Boe Eno Moto</h3>
-          <p>Bororo language &mdash; dictionary, encyclopedia, fauna, ethnobotany, bibliography</p>
+          <p>Bororo language &mdash; dictionary, encyclopedia, fauna, ethnobotany, bibliography, videos</p>
           <span class="arrow">&rarr; boeenomoto.terradoc.org</span>
         </a>
         <a href="https://enawenenawe.terradoc.org" class="platform">
           <h3>Enawen&ecirc;-Naw&ecirc;</h3>
-          <p>Enawen&ecirc;-Naw&ecirc; language &mdash; dictionary, fauna, bibliography</p>
+          <p>Enawen&ecirc;-Naw&ecirc; language &mdash; dictionary, encyclopedia, fauna, ethnobotany, bibliography, corpus</p>
           <span class="arrow">&rarr; enawenenawe.terradoc.org</span>
         </a>
+        <div class="platform">
+          <h3>Haliti-Paresi</h3>
+          <p>Haliti-Paresi language &mdash; in preparation</p>
+        </div>
+        <div class="platform">
+          <h3>Terena</h3>
+          <p>Terena language &mdash; in preparation</p>
+        </div>
       </div>
     </div>
   </section>
@@ -272,8 +278,9 @@ footer a{color:var(--fg-mid)}
       <pre><code><span style="color:var(--fg-dim)">$</span> pip install terradoc
 <span style="color:var(--fg-dim)">$</span> terradoc init my-project
 <span style="color:var(--fg-dim)">$</span> cd my-project</code></pre>
-      <p style="margin-top:1rem">Add your data files, configure <code>terradoc.yaml</code>, and build:</p>
-      <pre><code><span style="color:var(--fg-dim)">$</span> terradoc build</code></pre>
+      <p style="margin-top:1rem">Add your data files, configure <code>terradoc.yaml</code>, check and build:</p>
+      <pre><code><span style="color:var(--fg-dim)">$</span> terradoc check
+<span style="color:var(--fg-dim)">$</span> terradoc build</code></pre>
       <p style="margin-top:1rem">The generated site is written to <code>docs/</code>, ready to publish.</p>
     </div>
   </section>
@@ -283,19 +290,17 @@ footer a{color:var(--fg-mid)}
       <h2>Project Structure</h2>
       <pre><code>my-project/
   terradoc.yaml          # project configuration
-  config/
-    templates/           # optional template overrides
-    dictionary.yaml      # per-module display config
-    fauna.yaml
-    ...
   data/
     dictionary.tsv       # lexical records
     encyclopedia/        # Markdown articles with YAML front matter
     fauna.yaml           # fauna entries
     ethnobotany.yaml     # ethnobotanical knowledge
     references.bib       # BibTeX bibliography
+    pages/               # the site's own Markdown pages
     ...
-  locales/               # interface translations
+  locales/               # the site's own texts (pt.yaml, en.yaml, ...)
+  static/                # photographs, audio, favicon
+  config/templates/v2/   # optional: the site's pattern pack and template overrides
   docs/                  # generated output</code></pre>
     </div>
   </section>

@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guia: como alterar as plataformas e como a alteração chega ao site · Terradoc</title>
+<meta name="description" content="Guia passo a passo para alterar as plataformas da Plataforma de Línguas Indígenas e publicar as alterações.">
+<link rel="icon" type="image/svg+xml" href="../logo.svg">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:#2c2520;background:#faf9f7;line-height:1.65;-webkit-font-smoothing:antialiased}
+header{border-bottom:1px solid #e5e0da;padding:1rem 1.5rem}
+header a{color:#5c534b;font-weight:600;text-decoration:none}
+main{max-width:46rem;margin:0 auto;padding:2rem 1.5rem 4rem}
+a{color:#a85d33} a:hover{color:#8f4e2b}
+h1{font-size:2rem;line-height:1.2;letter-spacing:-0.02em}
+h2{margin-top:3rem;padding-top:1rem;border-top:1px solid #e5e0da}
+h3{margin-top:2rem}
+img{max-width:100%;height:auto;border:1px solid #e5e0da;border-radius:6px;display:block;margin:1rem 0}
+code{font-family:ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;font-size:0.9em;background:#f5f3ef;padding:0.1em 0.35em;border-radius:4px}
+pre{background:#f5f3ef;border:1px solid #efe9e2;border-radius:8px;padding:1rem 1.25rem;overflow-x:auto}
+pre code{background:none;padding:0}
+table{border-collapse:collapse;width:100%;display:block;overflow-x:auto;font-size:0.92rem}
+th,td{border:1px solid #e5e0da;padding:0.4rem 0.6rem;text-align:left;vertical-align:top}
+th{background:#f5f3ef}
+blockquote{margin:1rem 0;padding:0.5rem 1rem;border-left:4px solid #a85d33;background:#f5f3ef}
+hr{border:0}
+footer{max-width:46rem;margin:0 auto;padding:0 1.5rem 3rem;color:#8a8078;font-size:0.85rem}
+</style>
+</head>
+<body>
+<header><a href="../">← Terradoc</a></header>
+<main>
+<h1 id="guia-como-alterar-as-plataformas-e-como-a-alteração-chega-ao-site">Guia: como alterar as plataformas e como a alteração chega ao site</h1>
+<p>Este guia é para quem cuida do <strong>conteúdo</strong> das plataformas (dicionário, enciclopédia, fauna,
+plantas, fotos, gravações, páginas do portal) e não é programador. Ele mostra, passo a passo,
+onde fica cada coisa, como mudar, o que acontece depois e o que fazer quando algo dá errado.</p>
+<p>Os exemplos usam o Boe Eno Moto (Bororo, repositório <code>boeenomoto</code>), mas valem igualmente para
+o Enawenê-Nawê (<code>enawenenawe</code>) e para as próximas plataformas.</p>
+<p><strong>Sumário</strong></p>
+<ol>
+<li><a href="#1-como-tudo-se-encaixa">Como tudo se encaixa</a></li>
+<li><a href="#2-onde-fica-cada-coisa-no-reposit%C3%B3rio">Onde fica cada coisa no repositório</a></li>
+<li><a href="#3-alterar-pelo-navegador-sem-instalar-nada">Alterar pelo navegador, sem instalar nada</a></li>
+<li><a href="#4-alterar-no-seu-computador">Alterar no seu computador</a></li>
+<li><a href="#5-quando-algo-d%C3%A1-errado">Quando algo dá errado</a></li>
+<li><a href="#6-receitas-para-tarefas-comuns">Receitas para tarefas comuns</a></li>
+<li><a href="#7-atualizar-o-terradoc-numa-plataforma">Atualizar o terradoc numa plataforma</a></li>
+<li><a href="#8-come%C3%A7ar-uma-plataforma-nova">Começar uma plataforma nova</a></li>
+<li><a href="#9-regras-que-importam">Regras que importam</a></li>
+<li><a href="#10-pequeno-gloss%C3%A1rio">Pequeno glossário</a></li>
+</ol>
+<hr />
+<h2 id="1-como-tudo-se-encaixa">1. Como tudo se encaixa</h2>
+<p><img src="img/01-fluxo.png" alt="Fluxo: você edita, o GitHub verifica e publica, o servidor busca a nova versão" /></p>
+<ul>
+<li><strong>Cada plataforma é um repositório no GitHub</strong>, na organização <code>plataformasindigenas</code>:
+<code>boeenomoto</code>, <code>enawenenawe</code>, e um novo para cada povo. O portal
+(<a href="https://plataformas.terradoc.org/">https://plataformas.terradoc.org/</a>) fica no repositório <code>www</code>, na pasta <code>portal/</code>.</li>
+<li><strong>O repositório é o site.</strong> Os sites são gerados a partir dos arquivos de dados e de texto
+do repositório por um programa chamado <strong>terradoc</strong>. Ninguém edita as páginas HTML à mão.</li>
+<li><strong>Cada alteração salva e enviada ao GitHub (um <em>push</em>) dispara o GitHub Actions</strong>, que faz
+quatro coisas, sozinho:
+<ol>
+<li><strong>verifica</strong> os dados (<code>terradoc check</code>): colunas, números repetidos, imagens e gravações
+citadas que não existem, consentimento;</li>
+<li><strong>constrói</strong> o site completo (<code>terradoc build</code>);</li>
+<li><strong>guarda</strong>: compara o site novo com o que está no ar e bloqueia se muita coisa sumiu de
+uma vez (<code>terradoc guard</code>);</li>
+<li><strong>publica</strong> o site construído.</li>
+</ol>
+</li>
+<li><strong>O servidor busca a nova versão a cada 2 minutos</strong> e a coloca no ar. Contando a
+verificação e a construção (2 a 3 minutos), uma alteração aparece no site em <strong>cerca de
+5 minutos</strong>.</li>
+<li><strong>O ramo <code>master</code> é o site oficial.</strong> Qualquer outro ramo vira uma <strong>prévia</strong>: um site
+completo, só para conferir, em <code>https://previews.terradoc.org/&lt;site&gt;/&lt;ramo&gt;/</code>. Por exemplo,
+o ramo <code>correcao-fauna</code> do Bororo aparece em
+<code>https://previews.terradoc.org/boeenomoto/correcao-fauna/</code>.</li>
+</ul>
+<p><img src="img/02-site-bororo.webp" alt="O site oficial do Boe Eno Moto" /></p>
+<p>Todas as plataformas têm a mesma interface, com as cores, o alfabeto e os padrões de cada
+povo. Esta é a letra A do dicionário Enawenê-Nawê
+(<a href="https://enawenenawe.terradoc.org/pt/dictionary/a.html">https://enawenenawe.terradoc.org/pt/dictionary/a.html</a>):</p>
+<p><img src="img/03-site-enawene-letra.webp" alt="A letra A do dicionário Enawenê-Nawê" /></p>
+<hr />
+<h2 id="2-onde-fica-cada-coisa-no-repositório">2. Onde fica cada coisa no repositório</h2>
+<p><img src="img/05-github-repositorio.png" alt="A lista de arquivos do repositório boeenomoto no GitHub, com as pastas principais marcadas" /></p>
+<table>
+<thead>
+<tr>
+<th>O que</th>
+<th>Onde</th>
+<th>Formato</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dicionário</td>
+<td><code>data/dictionary.tsv</code></td>
+<td>tabela separada por tabulações, uma palavra por linha</td>
+</tr>
+<tr>
+<td>Enciclopédia (verbetes)</td>
+<td><code>data/encyclopedia/&lt;id&gt;.md</code></td>
+<td>um arquivo por verbete: cabeçalho YAML e texto em Markdown</td>
+</tr>
+<tr>
+<td>Categorias da enciclopédia</td>
+<td><code>data/categories.yaml</code></td>
+<td>lista das categorias permitidas (só no Bororo, por enquanto)</td>
+</tr>
+<tr>
+<td>Animais (fauna)</td>
+<td><code>data/fauna.yaml</code></td>
+<td>YAML, um bloco por animal</td>
+</tr>
+<tr>
+<td>Plantas (etnobotânica)</td>
+<td><code>data/ethnobotany.yaml</code></td>
+<td>YAML, um bloco por planta</td>
+</tr>
+<tr>
+<td>Bibliografia</td>
+<td><code>data/bororo.bib</code> (Bororo), <code>data/references.bib</code> (Enawenê-Nawê)</td>
+<td>BibTeX</td>
+</tr>
+<tr>
+<td>Vídeos</td>
+<td><code>data/videos.yaml</code></td>
+<td>YAML, com o campo <code>consent</code> obrigatório</td>
+</tr>
+<tr>
+<td>Gravações do dicionário</td>
+<td><code>data/audio/*.webm</code></td>
+<td>áudio em WebM</td>
+</tr>
+<tr>
+<td>Consentimento das gravações</td>
+<td><code>data/audio/manifest.tsv</code></td>
+<td>tabela: arquivo, id da palavra, código do falante, consentimento</td>
+</tr>
+<tr>
+<td>Fotos e imagens</td>
+<td><code>static/images/</code></td>
+<td>JPG, PNG ou WebP; copiadas para o site</td>
+</tr>
+<tr>
+<td>Créditos das fotos</td>
+<td>junto de cada foto: <code>pic_credit</code> e <code>pic_source</code> (fauna, plantas), <code>credit</code> (enciclopédia), <code>theme.hero_credit</code> (foto da página inicial)</td>
+<td>texto</td>
+</tr>
+<tr>
+<td>Textos da interface (menus, títulos, apresentação)</td>
+<td><code>locales/pt.yaml</code>, <code>locales/en.yaml</code></td>
+<td>YAML</td>
+</tr>
+<tr>
+<td>Cores, padrões e o que fica de fora</td>
+<td><code>CULTURA.md</code> (explicação) e <code>config/templates/v2/motifs/&lt;povo&gt;/</code> (desenhos)</td>
+<td>texto e SVG</td>
+</tr>
+<tr>
+<td>Configuração do site (nome, idiomas, alfabeto, cores, foto inicial)</td>
+<td><code>terradoc.yaml</code></td>
+<td>YAML</td>
+</tr>
+<tr>
+<td>Versão do terradoc</td>
+<td><code>requirements.txt</code></td>
+<td>uma linha: <code>terradoc==0.23.0</code></td>
+</tr>
+<tr>
+<td>Publicação automática</td>
+<td><code>.github/workflows/site.yml</code> e <code>.github/CODEOWNERS</code></td>
+<td>não mexa sem falar com o Tiago</td>
+</tr>
+<tr>
+<td>Pendências nos dados (homônimos, definições vazias…)</td>
+<td><code>REVISAO-DADOS.md</code></td>
+<td>lista de trabalho para a equipe</td>
+</tr>
+</tbody>
+</table>
+<p><img src="img/06-github-pasta-data.png" alt="A pasta data do Bororo no GitHub" /></p>
+<p>Não procure os arquivos <code>data/*.json</code> nem a pasta <code>docs/</code>: eles são gerados na construção e
+não fazem parte do repositório.</p>
+<p>O GitHub mostra a tabela do dicionário como uma planilha. A coluna <code>id</code> é o número da palavra
+(nunca o reutilize), <code>entry</code> é a palavra, <code>ipa</code> a pronúncia, <code>pos</code> a classe gramatical (o
+Bororo aceita só uma lista fixa de valores, como <code>LEX</code>, <code>S</code>, <code>V</code>), <code>definition</code> a tradução.</p>
+<p><img src="img/07-github-arquivo-tsv.png" alt="O arquivo dictionary.tsv aberto no GitHub" /></p>
+<p>E é assim que essa linha aparece no site:</p>
+<p><img src="img/04-site-palavra.webp" alt="A página da palavra aerega no site" /></p>
+<hr />
+<h2 id="3-alterar-pelo-navegador-sem-instalar-nada">3. Alterar pelo navegador, sem instalar nada</h2>
+<p>Você precisa de uma conta no GitHub com acesso de escrita ao repositório (peça ao Tiago).
+As capturas de tela abaixo foram feitas sem login; <strong>com login, aparecem os botões de edição</strong>
+(o lápis, <em>Add file</em>, <em>Commit changes…</em>).</p>
+<h3 id="31-editar-um-arquivo">3.1 Editar um arquivo</h3>
+<ol>
+<li>Abra o repositório, por exemplo <a href="https://github.com/plataformasindigenas/boeenomoto">https://github.com/plataformasindigenas/boeenomoto</a>, e
+entre nas pastas até o arquivo (<code>data</code> → <code>dictionary.tsv</code>).</li>
+<li>Clique no <strong>lápis</strong> (<em>Edit this file</em>), no canto direito, acima do conteúdo (ver a
+imagem da seção 2).</li>
+<li>Faça a alteração. Para corrigir uma palavra numa tabela <code>.tsv</code>, mude só o texto dentro da
+célula; não apague nem acrescente tabulações.</li>
+</ol>
+<h3 id="32-salvar-num-ramo-novo-recomendado">3.2 Salvar num ramo novo (recomendado)</h3>
+<ol start="4">
+<li>Clique em <strong>Commit changes…</strong> (botão verde, no alto).</li>
+<li>Em <em>Commit message</em>, escreva em uma linha o que mudou, por exemplo
+<code>Dicionário: corrige a definição de aerega</code>.</li>
+<li>Escolha <strong>Create a new branch for this commit and start a pull request</strong>. O GitHub sugere
+um nome como <code>seu-usuario-patch-1</code>; pode manter, ou escrever algo como <code>corrige-aerega</code>
+(use só letras minúsculas, números e hífens).</li>
+<li>Clique em <strong>Propose changes</strong>. O GitHub abre a página do <em>pull request</em>; você pode criá-lo
+agora ou depois (passo 11).</li>
+</ol>
+<p>Se a alteração for pequena e você tiver certeza, pode escolher <strong>Commit directly to the
+<code>master</code> branch</strong>: ela vai direto para o site oficial, sem prévia. Mesmo assim ela é
+verificada antes; um erro não chega ao site.</p>
+<h3 id="33-abrir-a-prévia">3.3 Abrir a prévia</h3>
+<ol start="8">
+<li>
+<p>Abra a aba <strong>Actions</strong> do repositório. A execução da sua alteração aparece no alto, com o
+nome do ramo ao lado. Uma bolinha amarela quer dizer &quot;rodando&quot;; um sinal verde, &quot;deu certo&quot;;
+um X vermelho, &quot;falhou&quot; (veja a <a href="#5-quando-algo-d%C3%A1-errado">seção 5</a>).</p>
+<p><img src="img/08-github-actions.png" alt="A aba Actions, com as execuções e o ramo de cada uma" /></p>
+</li>
+<li>
+<p>Quando ficar verde, espere até 2 minutos e abra a prévia:
+<code>https://previews.terradoc.org/boeenomoto/&lt;nome-do-ramo&gt;/</code>. A lista de prévias de cada
+site fica em <code>https://previews.terradoc.org/&lt;site&gt;/</code> (por exemplo
+<a href="https://previews.terradoc.org/boeenomoto/">https://previews.terradoc.org/boeenomoto/</a>). Com login, a página da execução também mostra
+o link da prévia, sob <strong>Publicado / Published</strong>.</p>
+<p><img src="img/15-lista-de-previas.png" alt="A lista de prévias do boeenomoto" /></p>
+<p><img src="img/09-github-execucao-ok.png" alt="Uma execução que deu certo: Status Success" /></p>
+<p>Os avisos (triângulos amarelos) em <em>Annotations</em> não bloqueiam nada: são coisas a melhorar,
+como uma foto sem crédito.</p>
+</li>
+</ol>
+<h3 id="34-conferir">3.4 Conferir</h3>
+<ol start="10">
+<li>Na prévia, procure a palavra, o verbete ou a foto que você mudou e confira o resultado,
+em português e em inglês. Se precisar corrigir algo, edite de novo <strong>no mesmo ramo</strong> (no
+GitHub, escolha o ramo no seletor de ramos, no alto à esquerda, antes de abrir o arquivo).
+A prévia se atualiza sozinha.</li>
+</ol>
+<h3 id="35-levar-para-o-site-oficial">3.5 Levar para o site oficial</h3>
+<ol start="11">
+<li>Abra a aba <strong>Pull requests</strong> → <strong>New pull request</strong> (ou o aviso amarelo <em>Compare &amp; pull
+request</em>), escolha o seu ramo e clique em <strong>Create pull request</strong>. Escreva o que mudou.
+É aqui que outra pessoa pode revisar.</li>
+<li>Clique em <strong>Merge pull request</strong> → <strong>Confirm merge</strong>. Isso junta o seu ramo ao <code>master</code>.</li>
+<li>Clique em <strong>Delete branch</strong>. A prévia desaparece sozinha, uns 10 minutos depois.</li>
+</ol>
+<h3 id="36-ver-no-ar">3.6 Ver no ar</h3>
+<ol start="14">
+<li>Na aba <strong>Actions</strong> aparece uma nova execução, agora no ramo <code>master</code>. Quando ela ficar
+verde, espere até 2 minutos e abra o site oficial: <a href="https://boeenomoto.terradoc.org/">https://boeenomoto.terradoc.org/</a>.
+Se a página antiga continuar aparecendo, recarregue-a (Ctrl+Shift+R, ou Cmd+Shift+R no Mac).</li>
+</ol>
+<h3 id="37-enviar-arquivos-novos-fotos-gravações-verbetes">3.7 Enviar arquivos novos (fotos, gravações, verbetes)</h3>
+<p>Entre na pasta (por exemplo <code>static/images</code>), clique em <strong>Add file</strong> → <strong>Upload files</strong>,
+arraste os arquivos e salve como no passo 4 em diante. Para um verbete novo, use
+<strong>Add file</strong> → <strong>Create new file</strong> dentro de <code>data/encyclopedia/</code>.</p>
+<hr />
+<h2 id="4-alterar-no-seu-computador">4. Alterar no seu computador</h2>
+<p>Vale a pena para mudanças grandes (muitas linhas, muitos arquivos) e para ver o site antes de
+enviar. Você precisa de <strong>git</strong> e <strong>Python 3.12</strong> (a mesma versão usada na publicação).</p>
+<h3 id="41-uma-vez-só-copiar-o-repositório-e-instalar-o-terradoc">4.1 Uma vez só: copiar o repositório e instalar o terradoc</h3>
+<pre><code class="language-sh">git clone https://github.com/plataformasindigenas/boeenomoto.git
+cd boeenomoto
+python3 -m venv .venv
+source .venv/bin/activate          # no Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+</code></pre>
+<p>O <code>requirements.txt</code> instala <strong>exatamente a versão do terradoc que o site usa</strong>, para que o
+resultado no seu computador seja igual ao da publicação. A pasta <code>.venv</code> não vai para o
+repositório.</p>
+<p>Nas próximas vezes, basta entrar na pasta, ativar o ambiente (<code>source .venv/bin/activate</code>) e
+trazer as novidades:</p>
+<pre><code class="language-sh">git switch master
+git pull
+pip install -r requirements.txt    # só muda algo se a versão do terradoc mudou
+</code></pre>
+<h3 id="42-criar-um-ramo-e-editar">4.2 Criar um ramo e editar</h3>
+<pre><code class="language-sh">git switch -c corrige-fauna
+</code></pre>
+<p>Edite os arquivos com o editor de sua preferência. Para as tabelas <code>.tsv</code> você pode usar o
+LibreOffice Calc: ao salvar, escolha <strong>Texto CSV</strong>, separador <strong>tabulação</strong>, codificação
+<strong>UTF-8</strong>, sem aspas em volta do texto.</p>
+<h3 id="43-verificar">4.3 Verificar</h3>
+<pre><code class="language-sh">terradoc check
+</code></pre>
+<p>Leva alguns segundos e não escreve nada. Cada problema aparece com o arquivo e a linha. Os
+<strong>erros</strong> (<code>ERROR</code>) impedem a publicação; os <strong>avisos</strong> (<code>WARNING</code>) não. Exemplo com quatro
+erros (feitos de propósito, numa cópia):</p>
+<p><img src="img/12-terminal-check-erros.png" alt="Saída de terradoc check com quatro erros e dois avisos" /></p>
+<p>Como ler:</p>
+<ul>
+<li><code>data/dictionary.tsv:4: pos: … got 'LEXX'</code>: na linha 4 da tabela, a classe gramatical
+<code>LEXX</code> não está na lista permitida (o certo era <code>LEX</code>).</li>
+<li><code>duplicate id 2 (first used on line 3)</code>: duas linhas com o mesmo número na coluna <code>id</code>.</li>
+<li><code>[consent] … 'consent' must be one of approved, external</code>: uma gravação sem consentimento
+registrado. Não é publicada, e a publicação inteira é bloqueada até corrigir.</li>
+<li><code>[media] … missing file 'images/formiga-onca.jpg'</code>: o verbete cita uma foto que não está em
+<code>static/images/</code> (nome errado ou foto não enviada).</li>
+</ul>
+<h3 id="44-construir-e-abrir-o-site-no-seu-computador">4.4 Construir e abrir o site no seu computador</h3>
+<pre><code class="language-sh">terradoc build --out /tmp/site
+</code></pre>
+<p>(No Windows, use outra pasta, por exemplo <code>--out C:\temp\site</code>.) O comando roda o <code>check</code>
+primeiro e para se houver erro. O Bororo, com mais de 11 000 páginas, leva menos de um
+minuto. Ele também lista as fotos que estão no site sem crédito:</p>
+<p><img src="img/13-terminal-check-build.png" alt="Saída de terradoc check e terradoc build" /></p>
+<p>Abra no navegador o arquivo <code>/tmp/site/pt/index.html</code> (ou arraste-o para uma janela do
+navegador) e navegue até o que você mudou:</p>
+<p><img src="img/14-build-local.webp" alt="O site construído no computador, com a alteração" /></p>
+<p>Para reconstruir do zero, apagando a versão anterior: <code>terradoc build --out /tmp/site --clean</code>.</p>
+<p>A construção também deixa alguns arquivos <code>data/*.json</code> na sua cópia: são intermediários, o git
+os ignora. Se preferir que fiquem fora, acrescente <code>--bundle-dir /tmp/bundle</code>.</p>
+<h3 id="45-enviar">4.5 Enviar</h3>
+<pre><code class="language-sh">git add data/fauna.yaml static/images/fauna_200_novo.jpg
+git commit -m &quot;Fauna: acrescenta ...&quot;
+git push -u origin corrige-fauna
+</code></pre>
+<p>Depois disso, tudo segue como no navegador: a prévia em
+<code>https://previews.terradoc.org/boeenomoto/corrige-fauna/</code>, o <em>pull request</em>, o <em>merge</em>
+(<a href="#33-abrir-a-pr%C3%A9via">passos 8 a 14</a>).</p>
+<hr />
+<h2 id="5-quando-algo-dá-errado">5. Quando algo dá errado</h2>
+<p><strong>Nada quebrado chega ao site: o site no ar continua com a última versão boa.</strong> Uma
+alteração com erro fica parada até alguém corrigi-la.</p>
+<h3 id="51-como-você-fica-sabendo">5.1 Como você fica sabendo</h3>
+<ol>
+<li>
+<p>O commit ganha um <strong>X vermelho</strong> no GitHub, e a execução na aba <strong>Actions</strong> aparece como
+<em>Failure</em>.</p>
+</li>
+<li>
+<p>Na página da execução, em <strong>Annotations</strong>, cada problema aparece com o arquivo e a linha.
+Na página do commit, as mesmas anotações aparecem <strong>ao lado da linha</strong> do arquivo.</p>
+<p><img src="img/10-github-execucao-falhou.png" alt="Uma execução que falhou, com a anotação do problema" /></p>
+</li>
+<li>
+<p>Abre-se uma <em>issue</em> chamada <strong>&quot;Publicação falhou: &lt;ramo&gt;&quot;</strong>, que explica cada
+problema numa tabela, em português e inglês, com o link da execução. Ela menciona quem
+enviou a alteração e os responsáveis pelos arquivos (<code>.github/CODEOWNERS</code>), e o GitHub manda
+um e-mail. Se houver muitos erros, a lista completa está na issue.</p>
+<p><img src="img/11-issue-publicacao-falhou.png" alt="A issue Publicação falhou" /></p>
+</li>
+<li>
+<p>Corrija e envie de novo, no mesmo ramo. Quando a próxima execução der certo, a issue se
+fecha sozinha (&quot;Resolvido / Fixed&quot;).</p>
+</li>
+</ol>
+<p>Erros comuns: um <code>id</code> repetido no dicionário; uma linha com uma coluna a mais ou a menos;
+uma classe gramatical fora da lista; uma foto ou gravação citada que não existe; uma
+gravação ou vídeo sem <code>consent</code>; uma página do portal que existe em um idioma e falta em outro.</p>
+<h3 id="52-a-guarda-apagar-muito-de-uma-vez-é-bloqueado">5.2 A guarda: apagar muito de uma vez é bloqueado</h3>
+<p>A guarda compara o site novo com o que está no ar (no caso de uma prévia nova, com o site
+oficial) e <strong>bloqueia</strong> quando:</p>
+<ul>
+<li>uma seção (dicionário, fauna, enciclopédia…) perde <strong>mais de 20 registros, ou mais de 10 %</strong>
+deles;</li>
+<li>o site perde <strong>mais de 10 arquivos publicados</strong> (páginas, fotos, gravações); num site grande o
+limite é 5 % dos arquivos (no Bororo, algumas centenas).</li>
+</ul>
+<p>Isso protege contra acidentes, como uma tabela salva pela metade. <strong>Se a redução for de
+propósito</strong>, escreva numa linha da mensagem do commit:</p>
+<pre><code class="language-text">confirma-reducao
+</code></pre>
+<p>No navegador, ponha <code>confirma-reducao</code> no campo <em>Extended description</em>, abaixo da mensagem do
+commit. Basta estar em um dos commits enviados naquele push. A guarda então só avisa e deixa
+publicar. A issue de exemplo acima é justamente um bloqueio da guarda.</p>
+<h3 id="53-como-desfazer-uma-alteração-que-já-está-no-ar">5.3 Como desfazer uma alteração que já está no ar</h3>
+<ul>
+<li><strong>Pelo navegador, se a alteração entrou por <em>pull request</em>:</strong> abra o <em>pull request</em> já
+juntado e clique em <strong>Revert</strong>. O GitHub cria um novo <em>pull request</em> que desfaz tudo; junte-o
+ao <code>master</code>.</li>
+<li><strong>Pelo navegador, se a alteração foi direto ao <code>master</code>:</strong> abra o arquivo, clique em
+<strong>History</strong>, abra a versão anterior, copie o conteúdo e salve-o por cima da versão atual
+(um novo commit).</li>
+<li><strong>No computador:</strong> <code>git revert &lt;commit&gt;</code> e <code>git push</code>. O código do commit (como <code>2e200c7</code>)
+aparece no histórico.</li>
+</ul>
+<p>Desfazer é uma alteração como outra qualquer: passa pela verificação e chega ao site em
+poucos minutos.</p>
+<p><strong>Qualquer coisa que precise acontecer no servidor</strong> (voltar o site a uma versão anterior
+imediatamente, tirar um arquivo de todas as versões guardadas, uma prévia que não aparece) é
+um <strong>pedido ao Tiago</strong>.</p>
+<hr />
+<h2 id="6-receitas-para-tarefas-comuns">6. Receitas para tarefas comuns</h2>
+<h3 id="61-corrigir-uma-palavra">6.1 Corrigir uma palavra</h3>
+<ol>
+<li>Abra <code>data/dictionary.tsv</code> e localize a linha (no GitHub, use <em>Search this file</em>; no
+computador, a busca do editor).</li>
+<li>Corrija o texto na coluna certa (<code>entry</code>, <code>ipa</code>, <code>definition</code>, <code>example_sent</code>…). Não mude o
+<code>id</code>.</li>
+<li>Salve num ramo, confira a prévia, junte ao <code>master</code> (<a href="#3-alterar-pelo-navegador-sem-instalar-nada">seção 3</a>).</li>
+</ol>
+<p>Homônimos: não escreva o número na palavra; use a coluna <code>homonym</code> (1, 2, …), e o site mostra
+<em>aka</em>¹, <em>aka</em>². O arquivo <code>REVISAO-DADOS.md</code> lista os casos ainda pendentes.</p>
+<h3 id="62-acrescentar-uma-palavra-com-gravação">6.2 Acrescentar uma palavra com gravação</h3>
+<ol>
+<li>
+<p><strong>Antes de tudo: a gravação tem consentimento para ser publicada?</strong> Se não tiver (ou se
+ainda estiver pendente), pare aqui e guarde o arquivo fora do repositório.</p>
+</li>
+<li>
+<p><strong>A linha do dicionário.</strong> Acrescente uma linha ao fim de <code>data/dictionary.tsv</code>, com um
+<code>id</code> novo (o maior número existente mais um; nunca reutilize um número apagado). O jeito
+mais seguro de manter as tabulações é copiar uma linha existente e trocar o conteúdo.</p>
+</li>
+<li>
+<p><strong>O arquivo de áudio.</strong> Converta a gravação para WebM, por exemplo com o programa ffmpeg:</p>
+<pre><code class="language-sh">ffmpeg -i aerega.wav -c:a libopus -b:a 48k aerega.webm
+</code></pre>
+<p>Dê ao arquivo o nome da palavra, sem acentos nem espaços. Uma segunda gravação da mesma
+palavra leva <code>__</code> e um código: <code>aerega__s03.webm</code>. <strong>Nunca ponha o nome de uma pessoa no
+nome do arquivo</strong>: o nome do arquivo aparece no endereço da gravação, no site.</p>
+</li>
+<li>
+<p>Envie o arquivo para <code>data/audio/</code>.</p>
+</li>
+<li>
+<p><strong>O registro de consentimento.</strong> Acrescente uma linha a <code>data/audio/manifest.tsv</code>, com as
+quatro colunas separadas por tabulação:</p>
+<table>
+<thead>
+<tr>
+<th>file</th>
+<th>entry_id</th>
+<th>speaker</th>
+<th>consent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>aerega__s03.webm</code></td>
+<td><code>1</code></td>
+<td><code>s03</code></td>
+<td><code>approved</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><code>file</code>: o nome do arquivo em <code>data/audio/</code>;</li>
+<li><code>entry_id</code>: o <code>id</code> da palavra no dicionário (uma gravação de homófonos pode ter uma linha
+para cada palavra);</li>
+<li><code>speaker</code>: um <strong>código</strong> do falante, como <code>s03</code> (de 1 a 4 letras minúsculas e de 1 a 3
+algarismos), nunca o nome; pode ficar vazio. O código <strong>não</strong> é publicado; a lista que liga
+códigos a pessoas fica fora do repositório;</li>
+<li><code>consent</code>: <code>approved</code> quando a comunidade aprovou a publicação.</li>
+</ul>
+</li>
+<li>
+<p>Salve tudo <strong>no mesmo ramo</strong> (um commit ou vários) e confira a prévia: a página da palavra
+ganha um tocador &quot;Gravação 1&quot;, &quot;Gravação 2&quot;…</p>
+</li>
+</ol>
+<p>A verificação bloqueia: um arquivo <code>.webm</code> em <code>data/audio/</code> que não esteja no
+<code>manifest.tsv</code>; uma linha do manifesto cujo arquivo não existe; um <code>entry_id</code> que não está no
+dicionário; um <code>consent</code> diferente de <code>approved</code> ou <code>external</code>; um código de falante que
+pareça um nome.</p>
+<h3 id="63-acrescentar-uma-foto-com-crédito">6.3 Acrescentar uma foto com crédito</h3>
+<ol>
+<li>
+<p>Confirme que a foto <strong>pode</strong> ser publicada: é de vocês com autorização de quem aparece
+nela, ou tem licença aberta (Wikimedia Commons, iNaturalist com licença CC…).</p>
+</li>
+<li>
+<p>Envie a foto para <code>static/images/</code> com um nome sem espaços nem acentos, por exemplo
+<code>fauna_200_tuiuiu.jpg</code>. Fotos grandes demais deixam o site lento: 1600 pixels de largura
+bastam.</p>
+</li>
+<li>
+<p>Ligue a foto ao registro, <strong>sempre com o crédito</strong>:</p>
+<ul>
+<li>
+<p><strong>Fauna ou plantas</strong> (<code>data/fauna.yaml</code>, <code>data/ethnobotany.yaml</code>):</p>
+<pre><code class="language-yaml">  pic_link: images/fauna_200_tuiuiu.jpg
+  pic_credit: &quot;© Nome do autor, CC BY-SA 4.0, via Wikimedia Commons&quot;
+  pic_source: &quot;https://commons.wikimedia.org/wiki/File:...&quot;
+</code></pre>
+<p><code>pic_source</code> é o endereço da foto original (precisa começar com <code>https://</code>) e vira um
+link no crédito.</p>
+</li>
+<li>
+<p><strong>Enciclopédia</strong>, no cabeçalho do verbete:</p>
+<pre><code class="language-yaml">images:
+- url: images/enc_tuiuiu_0.jpg
+  alt: Tuiuiú pousado à beira do rio
+  credit: &quot;© Nome do autor, CC BY 4.0&quot;
+</code></pre>
+<p><code>alt</code> descreve o que a foto mostra, para quem não a vê.</p>
+</li>
+<li>
+<p><strong>Foto da página inicial</strong>: <code>theme.hero_image</code>, <code>theme.hero_alt</code> e <code>theme.hero_credit</code> em
+<code>terradoc.yaml</code>.</p>
+</li>
+<li>
+<p><strong>Páginas do portal</strong>: o crédito vai entre aspas depois do caminho:
+<code>![O que a foto mostra](images/escola.jpg &quot;Foto: Nome, 2025&quot;)</code>.</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Salve num ramo e confira a prévia.</p>
+</li>
+</ol>
+<p>Uma foto citada que não existe é um <strong>erro</strong>. Uma foto sem crédito é só um <strong>aviso</strong>, mas
+a regra do projeto é que toda foto tenha crédito (a construção lista quantas faltam).</p>
+<h3 id="64-escrever-um-verbete-da-enciclopédia">6.4 Escrever um verbete da enciclopédia</h3>
+<ol>
+<li>
+<p>Escolha o <strong>id</strong>: letras minúsculas sem acento, números e hífens (<code>adugo</code>,
+<code>aroe-maiwu</code>). O nome do arquivo é o id: <code>data/encyclopedia/aroe-maiwu.md</code>.</p>
+</li>
+<li>
+<p>Escreva o arquivo, com o cabeçalho entre as duas linhas <code>---</code>:</p>
+<pre><code class="language-markdown">---
+id: aroe-maiwu
+title: Aroe Maiwu
+variants: []
+abstract: Uma ou duas frases que resumem o verbete (aparecem na lista e nas buscas).
+categories:
+- cosmologia/espírito
+images: []
+references:
+- Albisetti1962aEnciclopedia
+see_also:
+- aroe
+---
+
+O texto do verbete, em Markdown: parágrafos separados por uma linha em branco,
+**negrito**, *itálico*, listas com `-`, títulos com `##`.
+</code></pre>
+<ul>
+<li><code>categories</code>: no Bororo, cada categoria precisa estar em <code>data/categories.yaml</code>. Para
+criar uma nova, acrescente-a lá também.</li>
+<li><code>references</code>: as chaves das obras em <code>data/bororo.bib</code> (a palavra depois de
+<code>@article{</code> ou <code>@book{</code>). Uma chave que não existe é erro: acrescente a obra ao <code>.bib</code>
+primeiro.</li>
+<li><code>see_also</code>: ids de outros verbetes que existem.</li>
+<li><code>images</code>: veja a <a href="#63-acrescentar-uma-foto-com-cr%C3%A9dito">receita 6.3</a>.</li>
+</ul>
+</li>
+<li>
+<p>Salve num ramo (no navegador: <strong>Add file</strong> → <strong>Create new file</strong> dentro de
+<code>data/encyclopedia/</code>) e confira a prévia.</p>
+</li>
+</ol>
+<h3 id="65-acrescentar-ou-mudar-uma-página-do-portal">6.5 Acrescentar ou mudar uma página do portal</h3>
+<p>O portal <a href="https://plataformas.terradoc.org/">https://plataformas.terradoc.org/</a> é feito pelo terradoc a partir de páginas em
+Markdown, no repositório <code>www</code>, pasta <code>portal/</code>, e é publicado pelo arquivo
+<code>.github/workflows/publish.yml</code> desse repositório. As prévias ficam em
+<code>https://previews.terradoc.org/plataformas/&lt;ramo&gt;/</code>.</p>
+<blockquote>
+<p><strong>Situação em 2026-11-19:</strong> o portal feito pelo terradoc está no ramo <code>v2</code> do <code>www</code>. Até o
+Tiago juntar esse ramo ao <code>master</code>, o portal no ar é a versão antiga, e as páginas abaixo
+estão no ramo <code>v2</code>. Comece os seus ramos a partir dele.</p>
+</blockquote>
+<p><img src="img/16-github-portal-paginas.png" alt="As páginas do portal, em português, no ramo v2" /></p>
+<ol>
+<li>
+<p>Cada página é um arquivo <code>portal/data/pages/&lt;idioma&gt;/&lt;nome&gt;.md</code>. <strong>A mesma página existe em
+português, inglês e espanhol, com o mesmo nome de arquivo</strong> (<code>pt/equipe.md</code>, <code>en/equipe.md</code>,
+<code>es/equipe.md</code>); a verificação acusa uma página que falte num idioma.</p>
+</li>
+<li>
+<p>O cabeçalho:</p>
+<pre><code class="language-markdown">---
+title: Equipe                       # obrigatório: o título e o nome no menu
+description: Quem faz o projeto.    # opcional: a frase de abertura
+nav: 2                              # opcional: entra no menu, nesta ordem
+aliases: [equipe.html]              # opcional: endereços antigos que levam para cá
+---
+O texto, em Markdown (sem HTML).
+</code></pre>
+</li>
+<li>
+<p>O nome do arquivo usa só <code>a-z</code>, <code>0-9</code> e <code>-</code>, e vira o endereço: <code>pt/equipe.html</code>.</p>
+</li>
+<li>
+<p>Fotos vêm de <code>portal/static/images/</code>, com crédito
+(<a href="#63-acrescentar-uma-foto-com-cr%C3%A9dito">receita 6.3</a>). Fotos de outros sites não são
+aceitas: use um link.</p>
+</li>
+<li>
+<p>Uma lista em que cada item tem uma foto vira um conjunto de cartões (como a página da
+equipe).</p>
+</li>
+<li>
+<p><code>home.md</code> é o texto da página inicial, abaixo da foto.</p>
+</li>
+</ol>
+<h3 id="66-retirar-algo-a-pedido-consentimento-retirado">6.6 Retirar algo a pedido (consentimento retirado)</h3>
+<p>Quando alguém pede para retirar uma gravação, uma foto ou um texto:</p>
+<ol>
+<li><strong>Avise o Tiago imediatamente</strong>, dizendo exatamente o quê (arquivo, palavra, verbete) e em
+qual plataforma. O site guarda versões anteriores no servidor, e só ele pode tirar o arquivo
+de todas elas; ele também cuida do histórico do GitHub e das cópias de dados que cada
+execução guarda por 30 dias.</li>
+<li><strong>Tire do repositório</strong>, num commit (pode ser direto no <code>master</code>, pela urgência):
+<ul>
+<li>uma gravação: apague o arquivo de <code>data/audio/</code> <strong>e</strong> a linha dele em <code>manifest.tsv</code>;</li>
+<li>uma foto: apague o arquivo de <code>static/images/</code> <strong>e</strong> a referência a ele (<code>pic_link</code>,
+<code>images:</code> do verbete), com o crédito;</li>
+<li>um texto ou registro: apague o verbete ou a linha.</li>
+</ul>
+</li>
+<li>Se forem muitos itens de uma vez, a guarda vai bloquear: use <code>confirma-reducao</code>
+(<a href="#52-a-guarda-apagar-muito-de-uma-vez-%C3%A9-bloqueado">seção 5.2</a>).</li>
+</ol>
+<p>Os dois passos são necessários: se o arquivo sair só do servidor, a próxima publicação o traz
+de volta; se sair só do repositório, as versões guardadas ainda o têm. <strong>Apagar do repositório
+não apaga do histórico do git</strong>: por isso o cuidado está antes, em nunca enviar o que não tem
+consentimento (<a href="#9-regras-que-importam">seção 9</a>).</p>
+<hr />
+<h2 id="7-atualizar-o-terradoc-numa-plataforma">7. Atualizar o terradoc numa plataforma</h2>
+<p>Cada plataforma usa <strong>uma versão fixa</strong> do terradoc, escrita em dois lugares que precisam
+concordar:</p>
+<ul>
+<li><code>requirements.txt</code>: <code>terradoc==0.23.0</code>;</li>
+<li><code>.github/workflows/site.yml</code>: a linha
+<code>uses: plataformasindigenas/terradoc/.github/workflows/site.yml@&lt;código&gt;  # v0.23.0</code>.</li>
+</ul>
+<p>Assim, uma versão nova do terradoc <strong>nunca muda um site sozinha</strong>. Quem atualiza é o <strong>Tiago</strong>:
+ele lança a versão nova, confere que todas as plataformas continuam construindo do mesmo jeito
+e então muda as duas linhas em cada repositório, num commit como
+<code>terradoc 0.24.0 (…)</code>. Você não precisa fazer nada; depois de uma atualização, basta rodar de
+novo <code>pip install -r requirements.txt</code> na sua cópia local.</p>
+<p>Se você precisar de algo novo no terradoc (um campo, uma página, um texto da interface),
+peça ao Tiago.</p>
+<hr />
+<h2 id="8-começar-uma-plataforma-nova">8. Começar uma plataforma nova</h2>
+<p>Duas plataformas novas já começaram, em 2026-11-19: <strong>Haliti-Paresi</strong> (repositório <code>paresi</code>) e
+<strong>Terena</strong> (<code>terena</code>). Por enquanto têm só a enciclopédia e a bibliografia, a partir de fontes
+publicadas, e estão em prévia no ramo <code>inicio</code>
+(<a href="https://previews.terradoc.org/paresi/inicio/">https://previews.terradoc.org/paresi/inicio/</a>, <a href="https://previews.terradoc.org/terena/inicio/">https://previews.terradoc.org/terena/inicio/</a>);
+o <code>master</code> só recebe o site quando a comunidade o tiver visto. As cores e os desenhos de cada uma,
+e o que ainda falta combinar com a comunidade (o alfabeto, por exemplo), estão no <code>CULTURA.md</code>
+de cada repositório. Os dados da pesquisa de campo entram nesses repositórios, no ramo <code>inicio</code>.</p>
+<p>Para uma plataforma ainda mais nova, o trabalho se divide assim.</p>
+<h3 id="o-que-você-prepara">O que você prepara</h3>
+<ol>
+<li><strong>Consentimento e acordo com a comunidade</strong>: o que pode ser publicado, quem aprova (pode
+ser um papel, como &quot;coordenador&quot;, em vez de um nome) e o que fica de fora.</li>
+<li><strong>O nome da plataforma</strong> (de preferência na própria língua) e um endereço curto, sem
+acentos, que vira o nome do repositório e o endereço do site:
+<code>https://&lt;nome&gt;.terradoc.org/</code>.</li>
+<li><strong>O código da língua</strong> (ISO 639-3) e <strong>o alfabeto</strong>: as letras e a ordem em que o dicionário
+deve ser organizado, incluindo dígrafos, a partir de uma fonte publicada (cite-a).</li>
+<li><strong>O dicionário</strong> numa tabela com as colunas <code>id</code>, <code>entry</code>, <code>ipa</code>, <code>pos</code>, <code>definition</code>,
+<code>example_sent</code> (e as outras que fizerem sentido), um número único por linha.</li>
+<li><strong>Os textos de apresentação</strong>: subtítulo, uma frase de abertura, o &quot;Sobre&quot;, em português e
+inglês.</li>
+<li><strong>Fotos</strong>: uma para a página inicial (dizendo se mostra pessoas), e as outras com crédito
+e autorização.</li>
+<li><strong>Cores</strong>: cinco cores com papéis (fundo, texto, títulos e links, faixas, texto
+secundário), cada uma com o material de onde vem (urucum, argila, jenipapo…). Padrões
+gráficos do povo <strong>só com aprovação da comunidade</strong>; sem isso, o site usa o padrão neutro
+do terradoc e fica completo assim mesmo.</li>
+<li><strong>O primeiro <code>CULTURA.md</code></strong>: de onde vêm as cores e os padrões, quem aprovou e quando, e o
+que ficou de fora de propósito (veja os do Bororo e do Enawenê-Nawê como modelo).</li>
+<li>Se houver: verbetes, fauna, plantas, bibliografia (<code>.bib</code>), gravações com o registro de
+consentimento.</li>
+</ol>
+<h3 id="o-que-o-tiago-faz">O que o Tiago faz</h3>
+<ul>
+<li>cria o repositório em <code>plataformasindigenas</code>, a partir do modelo do terradoc
+(<code>terradoc init</code>), com a publicação automática e o <code>CODEOWNERS</code>;</li>
+<li>prepara o servidor e o endereço (DNS) do novo site;</li>
+<li>acrescenta a plataforma ao portal e às verificações do terradoc.</li>
+</ul>
+<p>Depois disso, a plataforma nova funciona exatamente como as outras: você edita, a prévia
+aparece, o <code>master</code> é o site oficial.</p>
+<hr />
+<h2 id="9-regras-que-importam">9. Regras que importam</h2>
+<ol>
+<li><strong>Tudo o que é enviado é público.</strong> Os repositórios são públicos. Qualquer arquivo enviado a
+<strong>qualquer ramo</strong>, inclusive uma prévia, fica visível para todos, e <strong>apagar depois não
+resolve</strong>: o histórico do git guarda tudo, e só o suporte do GitHub consegue remover de
+verdade. As mensagens de commit também são públicas.</li>
+<li><strong>Consentimento primeiro.</strong> Material com consentimento pendente <strong>nunca</strong> é enviado:
+guarde-o fora do repositório até a comunidade aprovar. Cada gravação e cada vídeo precisa de
+<code>consent</code>:
+<ul>
+<li><code>approved</code>: a comunidade aprovou que este site publique o material;</li>
+<li><code>external</code>: um vídeo público de outra pessoa que o site só incorpora (YouTube, por
+exemplo).
+Sem um desses dois valores, a publicação é bloqueada. Se algo for enviado por engano, avise
+o Tiago imediatamente (<a href="#66-retirar-algo-a-pedido-consentimento-retirado">receita 6.6</a>).</li>
+</ul>
+</li>
+<li><strong>Nenhum nome de falante nos sites, por enquanto.</strong> No <code>manifest.tsv</code> vai um código (<code>s01</code>),
+nunca um nome; também nada de nomes nos nomes de arquivos, nas legendas ou nos verbetes, até
+que isso seja combinado com as comunidades.</li>
+<li><strong>Toda foto tem crédito</strong> (autor, licença, fonte) e autorização de quem aparece nela.
+Qualquer foto pode ser retirada a pedido.</li>
+<li><strong>Nada restrito ou sagrado.</strong> Conhecimento, objetos, cantos, pinturas e imagens de uso
+restrito (rituais, funerários, de clã ou de família) não entram nos sites, nem como
+inspiração. Na dúvida, não publique e pergunte.</li>
+<li><strong>Os padrões pertencem aos povos.</strong> As cores, a faixa, a textura e o emblema de cada site
+vêm daquele povo, estão explicados no <code>CULTURA.md</code> do site e <strong>não são usados no site de
+outro povo</strong>. Mudanças nesses elementos passam pela aprovação registrada no <code>CULTURA.md</code>.</li>
+</ol>
+<hr />
+<h2 id="10-pequeno-glossário">10. Pequeno glossário</h2>
+<table>
+<thead>
+<tr>
+<th>Termo</th>
+<th>O que é</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>repositório</strong></td>
+<td>a pasta do projeto no GitHub, com todo o histórico; um por plataforma</td>
+</tr>
+<tr>
+<td><strong>commit</strong></td>
+<td>uma alteração salva, com uma mensagem que diz o que mudou</td>
+</tr>
+<tr>
+<td><strong>push</strong></td>
+<td>enviar os seus commits para o GitHub (no navegador, acontece ao salvar)</td>
+</tr>
+<tr>
+<td><strong>ramo</strong> (<em>branch</em>)</td>
+<td>uma linha de trabalho separada; <code>master</code> é o site oficial, os outros viram prévias</td>
+</tr>
+<tr>
+<td><strong>prévia</strong></td>
+<td>o site completo construído a partir de um ramo, só para conferir</td>
+</tr>
+<tr>
+<td><em><strong>pull request</strong></em></td>
+<td>o pedido para juntar um ramo ao <code>master</code>, onde a mudança pode ser revisada</td>
+</tr>
+<tr>
+<td><em><strong>merge</strong></em></td>
+<td>juntar um ramo ao <code>master</code>; é o que leva a mudança ao site oficial</td>
+</tr>
+<tr>
+<td><em><strong>revert</strong></em></td>
+<td>um commit novo que desfaz um commit anterior</td>
+</tr>
+<tr>
+<td><strong>GitHub Actions</strong></td>
+<td>o serviço do GitHub que verifica, constrói e publica a cada push</td>
+</tr>
+<tr>
+<td><em><strong>issue</strong></em></td>
+<td>um aviso ou pedido registrado no repositório; &quot;Publicação falhou&quot; é aberta automaticamente</td>
+</tr>
+<tr>
+<td><strong>TSV</strong></td>
+<td>tabela em texto, com as colunas separadas por tabulações</td>
+</tr>
+<tr>
+<td><strong>YAML</strong></td>
+<td>formato de texto com <code>chave: valor</code>, em que a indentação (espaços) importa</td>
+</tr>
+<tr>
+<td><strong>Markdown</strong></td>
+<td>texto com marcações simples: <code>**negrito**</code>, <code>*itálico*</code>, <code>## título</code></td>
+</tr>
+</tbody>
+</table>
+<p>Dúvidas: pergunte ao Tiago. Detalhes técnicos de como a publicação funciona estão em
+<a href="https://github.com/plataformasindigenas/terradoc/blob/master/docs/publishing.md"><code>docs/publishing.md</code></a>.</p>
+
+</main>
+<footer>Este guia é mantido no repositório do terradoc:
+<a href="https://github.com/plataformasindigenas/terradoc/tree/master/docs/guia">docs/guia</a>.</footer>
+</body>
+</html>
